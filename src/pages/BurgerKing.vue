@@ -59,19 +59,23 @@ const handleAddNewDrawer = () => {
 const scrollToCategory = (category) => {
   const categoryElement = document.getElementById(category);
   if (categoryElement) {
-    categoryElement.scrollIntoView({ behavior: 'smooth' });
+    const navbarHeight = document.querySelector('.category-navbar').offsetHeight;
+    const offset = categoryElement.offsetTop - navbarHeight;
+    window.scrollTo({ top: offset, behavior: 'smooth' });
     activeCategory.value = category;
   }
 };
 
+
 const updateActiveCategory = () => {
   const categoryElements = document.querySelectorAll(".category-header");
+  const navbarHeight = document.querySelector('.category-navbar').offsetHeight;
   let closestCategory = null;
   let minDistance = Infinity;
 
   categoryElements.forEach((category) => {
     const rect = category.getBoundingClientRect();
-    const distance = Math.abs(rect.top);
+    const distance = Math.abs(rect.top - navbarHeight);
     if (distance < minDistance) {
       minDistance = distance;
       closestCategory = category.id;
@@ -83,7 +87,6 @@ const updateActiveCategory = () => {
     scrollNavbarToActive();
   }
 };
-
 
 const scrollNavbarToActive = () => {
   const navbar = document.querySelector(".category-navbar")
@@ -106,7 +109,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="cafe-page cafe-items" style="margin-top: 50px;">
+  <section class="cafe-page cafe-items" style="margin-top: 60px;">
 
 
 <!--   Navbar  -->
@@ -115,7 +118,6 @@ onMounted(() => {
       ref="categoryNavbar"
       class="d-flex flex-nowrap justify-start align-center category-navbar"
       no-gutters
-      style="position: fixed; top: 0; left: 0; width: 100%; overflow-x: auto; white-space: nowrap; padding: 5px 0; scrollbar-width: none; -ms-overflow-style: none; z-index: 1000;"
     >
       <v-btn
         v-for="(category, categoryId) in items"
@@ -325,5 +327,18 @@ onMounted(() => {
 </template>
 
 <style scoped>
-@import "../assets/css/cafe.css";
+.category-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #17212b;
+  z-index: 1000;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 5px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 </style>
