@@ -542,6 +542,7 @@ toggleButtonLoading: function($button, isLoading) {
     let button = $(this).closest(".cafe-order-item").find('.cafe-item-decr-button');
     button.css('cursor', 'pointer');
 
+    Telegram.WebApp.HapticFeedback.impactOccurred('light');
 
    let itemEL = $(`.cafe-item[data-item-id="${id}"]`)
 
@@ -556,6 +557,7 @@ toggleButtonLoading: function($button, isLoading) {
     let itemEL = $(`.cafe-item[data-item-id="${id}"]`)
 
     if (currentValue > 1) {
+      Telegram.WebApp.HapticFeedback.impactOccurred('light');
       Cafe.incrClicked(itemEL,-1)
     }
 
