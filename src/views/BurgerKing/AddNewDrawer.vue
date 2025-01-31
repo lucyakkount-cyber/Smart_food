@@ -2,6 +2,7 @@
 import axios from "@/axios";
 import { requiredValidator } from "@/plugins/validators";
 import { nextTick, onMounted } from "vue";
+import Cafe from '/public/js/telegram'
 
 const props = defineProps({
   isDrawerVisible: {
@@ -18,7 +19,7 @@ const formRef = ref();
 const formData = ref({
   name: "",
   image: "",
-  short_video: "",
+  animation: "",
   category: [],
   special_offer: 1,
   price: ''
@@ -38,14 +39,13 @@ const onSubmit = async () => {
   try {
     isLoading.value = true;
 
-    // Create a new FormData instance
     const form = new FormData();
     form.append('name', formData.value.name);
     form.append('image', formData.value.image[0]);
-    form.append('short_video', formData.value.short_video[0]);
+    form.append('animation', formData.value.animation[0]);
     form.append('description', formData.value.description);
     form.append('special_offer', formData.value.special_offer)
-    form.append('price', formData.value.price.trim())
+    form.append('price', formData.value.price.replace(/ /g, ''))
 
     if (Array.isArray(formData.value.category)) {
       formData.value.category.forEach((cat) => {
@@ -63,6 +63,7 @@ const onSubmit = async () => {
     });
 
     if (response.status === 201) {
+      Cafe.showStatus('Product created successfully',true)
       emit("fetchData");
       handleModelUpdate(false);
     }
@@ -80,7 +81,7 @@ const handleModelUpdate = (val) => {
     nextTick(() => {
       formRef.value?.reset();
       formRef.value?.resetValidation();
-      formData.value = { name: "", image: null, short_video: null, category: [] };
+      formData.value = { name: "", image: null, animation: null, category: [] };
       selectedCategories.value = [];
     });
   }
@@ -116,7 +117,7 @@ onMounted(() => {
     location="end"
     style="width: max-content"
   >
-    <VCard class="h-100">
+    <VCard class="h-100 overflow-auto">
       <VRow class="py-6 px-3 align-center">
         <VCardTitle> Create </VCardTitle>
         <VSpacer />
@@ -152,7 +153,7 @@ onMounted(() => {
           <VCol cols="12">
             <VFileInput
               label="Short video"
-              v-model="formData.short_video"
+              v-model="formData.animation"
               :rules="[requiredValidator]"
             />
           </VCol>
@@ -172,6 +173,7 @@ onMounted(() => {
                   item-title="name"
                   item-value="id"
                   label="Select Category"
+                  :rules="[requiredValidator]"
                 />
               </v-col>
             </VRow>

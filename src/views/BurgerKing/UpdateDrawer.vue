@@ -25,7 +25,7 @@ const isLoading = ref("fetchData");
 const fetchDataById = async () => {
   try {
     isLoading.value = "fetchData";
-    const response = await axios.get(`/suppliers/${props.id}`);
+    const response = await axios.get(`/api/products/${props.id}/`);
 
     const {
       data: { supplier },
