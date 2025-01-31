@@ -55,4 +55,8 @@ export default defineConfig({
       './src/**/*.vue',
     ],
   },
+  server: {
+    host: '0.0.0.0', // Binds the server to all network interfaces
+    port: 10000,      // The port Render expects for the app
+  },
 })
