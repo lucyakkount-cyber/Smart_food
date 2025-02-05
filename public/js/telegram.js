@@ -395,7 +395,6 @@ let Cafe = {
       const isEdit = method === 'edit_item';
       Cafe.apiRequest(isEdit ? 'put' : 'delete', formData, function (response,status) {
 
-        console.log(response)
 
         const feedback = (status.status  === 204 || status?.success ) ? 'success' : 'warning';
         Telegram.WebApp.HapticFeedback.notificationOccurred(feedback);
