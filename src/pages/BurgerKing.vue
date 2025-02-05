@@ -329,18 +329,4 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.category-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 50px;
-  background-color: #17212b;
-  z-index: 1000;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding: 5px 0;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
 </style>
