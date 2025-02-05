@@ -582,10 +582,15 @@ toggleButtonLoading: function($button, isLoading) {
     if (currentValue > 1) {
       Telegram.WebApp.HapticFeedback.impactOccurred('light');
       Cafe.incrClicked(itemEL,-1)
+    }else {
+      const name = $('.cafe-order-item-title')
+      Telegram.WebApp.showConfirm('Siz ushbu mahsulotni olib tashlamoqchimisiz ?',(ok)=>{
+        if (ok){
+          Cafe.incrClicked(itemEL,-1)
+        }
+      })
     }
 
-    let button = $(this).closest(".cafe-order-item").find('.cafe-item-decr-button');
-    button.css('cursor', currentValue === 1 ? 'not-allowed' : 'pointer');
   }
 };
 

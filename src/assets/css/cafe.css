@@ -191,7 +191,7 @@ body.closed .cafe-page {
 
 .category-navbar {
     position: fixed;
-    box-shadow: 0 4px 2px -2px gray;
+    box-shadow: 0 4px 2px -2px var(--tg-theme-section-separator-color);
     top: 0;
     left: 0;
     width: 100%;
@@ -304,6 +304,7 @@ body.order-mode .cafe-items {
 }
 
 .cafe-item-label {
+  color: var(--tg-theme-text-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -398,7 +399,7 @@ button,
 
 .cafe-item-incr-button {
   position: absolute !important;
-  inline-size: 80px;
+  inline-size: 82px;
   inset-block-start: 0;
   inset-inline-end: 0;
   transition: inline-size var(--animation);
@@ -583,6 +584,7 @@ body.order-mode .cafe-order-overview {
 }
 
 .cafe-order-item-title {
+  color: var(--tg-theme-text-color);
   font-size: 15px;
   font-weight: 700;
   line-height: 18px;
@@ -604,6 +606,7 @@ body.order-mode .cafe-order-overview {
 }
 
 .cafe-order-item-price {
+  color: var(--tg-theme-text-color);
   font-size: 14px;
   font-weight: 500;
   line-height: 17px;
@@ -620,7 +623,7 @@ body.order-mode .cafe-order-overview {
   box-sizing: border-box;
   border: none;
   border-radius: 0;
-  color: var(--text-color);
+  color: var(--tg-theme-text-color);
   cursor: auto;
   font-family: var(--default-font), sans-serif;
   font-size: 17px;

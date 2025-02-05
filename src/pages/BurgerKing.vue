@@ -106,6 +106,10 @@ onMounted(() => {
   loadCafeItems();
   window.addEventListener("scroll", updateActiveCategory);
 });
+
+
+// Prevent all Ctrl key combinations
+
 </script>
 
 <template>
@@ -254,7 +258,9 @@ onMounted(() => {
     <AddNewDrawer
       v-model:isDrawerVisible="isAddNewDrawerVisible"
       @fetchData="loadCafeItems"
+      temporary
     />
+
   </section>
 
 
@@ -262,7 +268,7 @@ onMounted(() => {
   <section class="cafe-page cafe-order-overview">
     <div class="cafe-block">
       <div class="cafe-order-header-wrap">
-        <h2 class="cafe-order-header" style="color: white">Sizning buyurtmangiz</h2>
+        <h2 class="cafe-order-header" style="color: var(--tg-theme-text-color)">Sizning buyurtmangiz</h2>
         <span class="cafe-order-edit js-order-edit" style="cursor: pointer">Tahrirlash</span>
       </div>
       <div class="cafe-order-items">
