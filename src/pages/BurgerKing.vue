@@ -124,7 +124,7 @@ onMounted(() => {
       <loading />
     </div>
 
-    <v-row v-else
+    <v-row v-else-if="!isLoading && items"
       ref="categoryNavbar"
       class="d-flex flex-nowrap justify-start align-center category-navbar"
       no-gutters
@@ -142,7 +142,11 @@ onMounted(() => {
       </v-btn>
     </v-row>
 
-
+    <v-row v-if="!items" class="d-flex justify-lg-center align-center">
+      <v-col cols="12" class="d-flex align-center">
+        No Data found
+      </v-col>
+    </v-row>
     <!--    Cafe items-->
     <div v-for="(category, categoryId) in items" :key="categoryId" class="cafe-items">
 
@@ -169,7 +173,7 @@ onMounted(() => {
           <div class="cafe-item-label">
             <span class="cafe-item-title">{{ item.name }}</span>
             <span class="cafe-item-price">
-              {{ parseFloat(item.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }} SUM
+              {{ parseFloat(item.price).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') }} SUM
             </span>
           </div>
           <div class="cafe-item-buttons">
@@ -258,7 +262,6 @@ onMounted(() => {
     <AddNewDrawer
       v-model:isDrawerVisible="isAddNewDrawerVisible"
       @fetchData="loadCafeItems"
-      temporary
     />
 
   </section>
@@ -294,7 +297,7 @@ onMounted(() => {
           </div>
           <div>
             <div class="cafe-order-item-price js-order-item-price">
-              {{ parseFloat(order.price).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') }} <span> SUM</span>
+              {{ parseFloat(order.price).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') }} <span> SUM</span>
             </div>
             <div class="cafe-item-buttons" data-v-98d31c1b="">
               <button class="cafe-item-decr-button js-selected-item-decr  button-item ripple-handler">

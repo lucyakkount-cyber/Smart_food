@@ -10,11 +10,10 @@ let Cafe = {
   modeOrder: false,
   totalPrice: 0,
   location: null,
-  formData: new FormData(),
 
   init: function(options) {
     Telegram.WebApp.ready();
-    Cafe.apiUrl = options.apiUrl+'api/products/';
+    Cafe.apiUrl = options.apiUrl;
     Cafe.role = options.role;
     Cafe.mode = options.mode;
     Cafe.userId = options.userId;
@@ -142,7 +141,7 @@ let Cafe = {
     Cafe.updateItem(itemEl, delta);
   },
   formatPrice: function(price) {
-    return Cafe.formatNumber(price, 2, '.', ',') + ' SUM';
+    return Cafe.formatNumber(price, 0, '.', ',') + ' SUM';
   },
   formatNumber: function(number, decimals = 0, decPoint = '.', thousandsSep = ',') {
     number = parseFloat(number) || 0;
@@ -244,21 +243,20 @@ let Cafe = {
 
       let param = JSON.parse(Cafe.getOrderData())
 
-      Cafe.formData.append('data', JSON.stringify(param));
-      if (comment.length > 0){
-        Cafe.formData.append('comment',comment)
+      const formData = new URLSearchParams();
+      formData.append('data', JSON.stringify(param));
+      if (comment.length > 0) {
+        formData.append('comment', comment);
       }
-      Cafe.formData.append('user_id',`${Cafe.userId}`)
+      formData.append('user_id', `${Cafe.userId}`);
 
 
-      let invoiceSupported = Telegram.WebApp.isVersionAtLeast('6.1');
+
       Cafe.toggleLoading(true);
-      Cafe.apiRequest('post', Cafe.formData, function(result) {
+      Cafe.apiRequest('/','post', formData, function(result) {
         Cafe.toggleLoading(false);
         if (result.ok) {
           if (Cafe.mode === 'inline') {
-            Telegram.WebApp.close();
-          } else if (invoiceSupported) {
             Telegram.WebApp.close();
           } else {
             Telegram.WebApp.close();
@@ -298,7 +296,6 @@ let Cafe = {
 
     $modal.css({ left: `${x}px`, top: `${y}px` });
 
-    // Close modal logic
     $(window).off('click').one('click', function (e) {
       if ($modal.is(':visible') && !$modal[0].contains(e.target)) {
         $modal.hide();
@@ -338,7 +335,7 @@ let Cafe = {
       $('.modal-window').show();
 
       let itemName = cafeItem.find('.cafe-item-title').text();
-      let itemPrice = Cafe.formatNumber(cafeItem.data('item-price'), 2);
+      let itemPrice = Cafe.formatNumber(cafeItem.data('item-price'));
       let itemImage = cafeItem.find('img').attr('src');
       let itemVideo = `/public/img/stickers/${itemImage.replace('/public/img/', '').replace(/\.[^/.]+$/, '')}.webp`;
       $('.js-order-description-field').val($cafeItem.attr('data-item-description'))
@@ -379,7 +376,7 @@ let Cafe = {
       let formData = new FormData();
       formData.append('id', $cafeItem.attr('data-item-id'));
       formData.append('name', itemName);
-      formData.append('price', itemPrice.replace(/,/g, ''));
+      formData.append('price', itemPrice);
       formData.append('category', $cafeItem.attr('data-item-category'));
       formData.append('description', $('.js-order-description-field').val());
 
@@ -392,8 +389,8 @@ let Cafe = {
       }
 
       const isEdit = method === 'edit_item';
-      Cafe.apiRequest(isEdit ? 'put' : 'delete', formData, function (response,status) {
-        console.log(response)
+      const id = $cafeItem.attr('data-item-id')
+      Cafe.apiRequest(Cafe.apiUrl+`api/products/${id}/`,isEdit ? 'put' : 'delete', formData, function (response,status) {
 
 
         const feedback = (status?.status  === 204 || status?.success ) ? 'success' : 'warning';
@@ -428,21 +425,18 @@ let Cafe = {
           (status?.status  === 204 || status?.success)
         )
 
-      }, $cafeItem.attr('data-item-id'));
+      });
     });
 
-    // Image preview
     $('#item_img').off('change').change(function () {
       Cafe.handleFilePreview(this.files[0], $('#itemImage'));
     });
 
-    // Video preview
     $('#item_video').off('change').change(function () {
       Cafe.handleFilePreview(this.files[0], $('#itemVideo'));
     });
   },
 
-// Utility: Handle file preview
   handleFilePreview: function(file, $previewElement) {
   let reader = new FileReader();
   reader.onload = function (e) {
@@ -464,7 +458,6 @@ let Cafe = {
   reader.readAsDataURL(file);
 },
 
-// Utility: Toggle button loading state
 toggleButtonLoading: function($button, isLoading) {
   const spinner = $button.find('.spinner');
   if (isLoading) {
@@ -475,13 +468,13 @@ toggleButtonLoading: function($button, isLoading) {
     $button.removeClass('disabled').prop('disabled', false);
   }
 },
-  apiRequest: async function (type, data, onCallback, id) {
+  apiRequest: async function (url,type, data, onCallback, id) {
 
 
 
-    $.ajax(Cafe.apiUrl + `${id + '/' || ''}`, {
+    $.ajax(url ?? Cafe.apiUrl + `${id ? id + '/' : ''}`, {
       type: type,
-      enctype     : id ?  "multipart/form-data" : "application/x-www-form-urlencoded",
+      enctype : "multipart/form-data",
       processData: false, // Important: Do not process data (we're sending FormData)
       contentType: false, // Important: Do not set content type (let the browser set it)
       data: data, // Send the FormData object
@@ -490,14 +483,18 @@ toggleButtonLoading: function($button, isLoading) {
 
       },
       error: function (response, textStatus, status) {
-        let responseData = response.responseText ? JSON.parse(response.responseText) : {};
+        let responseData = {};
+
+        try {
+          responseData = response.responseText ? JSON.parse(response.responseText) : {};
+        } catch (e) {
+          console.error("Invalid JSON response:", response.responseText);
+        }
 
         const errorMessages = Object.entries(responseData).map(([field, messages]) => {
-
-          return `${field.toUpperCase()} ${messages.join(' ')}`;
+          return `${field.toUpperCase()} ${Array.isArray(messages) ? messages.join(' ') : messages}`;
         });
 
-        // Ensure the errorMessages array is passed or fallback to a default message if empty
         onCallback && onCallback({ error: errorMessages.length > 0 ? errorMessages : ['An unknown error occurred'] }, status || 400);
       }
     });
@@ -590,7 +587,6 @@ toggleButtonLoading: function($button, isLoading) {
       Telegram.WebApp.HapticFeedback.impactOccurred('light');
       Cafe.incrClicked(itemEL,-1)
     }else {
-      const name = $('.cafe-order-item-title')
       Telegram.WebApp.showConfirm('Siz ushbu mahsulotni olib tashlamoqchimisiz ?',(ok)=>{
         if (ok){
           Cafe.incrClicked(itemEL,-1)
