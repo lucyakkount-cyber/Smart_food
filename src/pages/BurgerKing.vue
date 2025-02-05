@@ -114,7 +114,13 @@ onMounted(() => {
 
 <!--   Navbar  -->
 
-    <v-row
+
+<!--    Loader -->
+    <div class="load" v-if="isLoading">
+      <loading />
+    </div>
+
+    <v-row v-else
       ref="categoryNavbar"
       class="d-flex flex-nowrap justify-start align-center category-navbar"
       no-gutters
@@ -132,16 +138,12 @@ onMounted(() => {
       </v-btn>
     </v-row>
 
-<!--    Loader -->
-    <div class="load" v-if="isLoading">
-      <loading />
-    </div>
 
-<!--    Cafe items-->
+    <!--    Cafe items-->
     <div v-for="(category, categoryId) in items" :key="categoryId" class="cafe-items">
 
       <div style="width: 100%">
-        <h1 :id="categoryId" class="category-header" style="margin: 0 10px 20px 0; width: 130px; line-height: 1.7">
+        <h1 :id="categoryId" class="category-header" style="margin: 0 10px 20px 0; width: 130px; color: #807f7f; line-height: 1.7">
           {{ category.name }}
         </h1>
       </div>
@@ -179,7 +181,7 @@ onMounted(() => {
 
 
 <!--        for style-->
-        <div class="cafe-item" style="width: 168px;height: 0">
+        <div class="cafe-item" style="width: 300px;height: 0">
 
         </div>
       </div>
@@ -197,7 +199,7 @@ onMounted(() => {
     <div id="editDeleteModal" class="modal-window">
       <div id="modalOverlay" class="modal-overlay"/>
       <div class="modal-content">
-        <span class="close-btn" style="position: absolute; right: 0; text-align: center; display: flex;">&times;</span>
+        <span class="close-btn" style="position: absolute; right: 10px; text-align: center; display: flex;">&times;</span>
         <div id="editDeleteForm">
           <div style="display: flex">
             <label for="item_img">

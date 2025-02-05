@@ -16,6 +16,7 @@ const emit = defineEmits(["update:isDrawerVisible", "fetchData"]);
 
 const isValid = ref(false);
 const formRef = ref();
+const categoryRef = ref();
 const formData = ref({
   name: "",
   image: "",
@@ -24,7 +25,10 @@ const formData = ref({
   special_offer: 1,
   price: ''
 });
+const categoryName = ref('')
+const isCategoryModalOpen = ref(false)
 const isLoading = ref(false);
+const isLoaded = ref(false)
 const isUpdating = ref(false);
 const selectedCategories = ref([]); // This should store selected category objects
 const people = ref([]); // This stores category data
@@ -76,7 +80,6 @@ const onSubmit = async () => {
 
 const handleModelUpdate = (val) => {
   emit("update:isDrawerVisible", val);
-
   if (val === false) {
     nextTick(() => {
       formRef.value?.reset();
@@ -96,7 +99,6 @@ const handleFetch = async () => {
         id: item.id,
         name: item.name,
         avatar: item.image,
-        group: item.group || "General",
       }));
     }
   } catch (error) {
@@ -105,6 +107,40 @@ const handleFetch = async () => {
     isUpdating.value = false;
   }
 };
+
+const handelReset = () =>{
+  categoryRef.value.resetValidation()
+  categoryName.value = ''
+  isCategoryModalOpen.value = false
+}
+
+const handleCategory = async () => {
+   try {
+     isLoaded.value = true
+     const response = await axios.post('api/categories/' ,{
+       name : categoryName.value,
+       status : true
+     },{
+       headers: {
+         'Content-Type': 'multipart/form-data',
+       },
+     })
+
+     if (response.status === 201){
+       Cafe.showStatus('Category created successfully',true)
+       isCategoryModalOpen.value = false
+       categoryName.value = ''
+       handleFetch()
+     }
+   }
+   catch (error){
+   Cafe.showStatus('Muammo yuzaga keldi')
+   }
+   finally {
+     isLoaded.value = false
+   }
+}
+
 
 onMounted(() => {
   handleFetch();
@@ -147,12 +183,11 @@ onMounted(() => {
               label="Image"
               v-model="formData.image"
               :rules="[requiredValidator]"
-              accept="image/png"
             />
           </VCol>
           <VCol cols="12">
             <VFileInput
-              label="Short video"
+              label="Animation"
               v-model="formData.animation"
               :rules="[requiredValidator]"
             />
@@ -174,6 +209,8 @@ onMounted(() => {
                   item-value="id"
                   label="Select Category"
                   :rules="[requiredValidator]"
+                  append-icon="mdi-invoice-text-plus"
+                  @click:append="isCategoryModalOpen = true"
                 />
               </v-col>
             </VRow>
@@ -182,13 +219,53 @@ onMounted(() => {
             <VBtn type="submit" :loading="isLoading" class="custom-loader_color">
               Submit
             </VBtn>
-            <VBtn color="secondary" @click="handleModelUpdate(false)">
+            <VBtn color="secondary" @click="handleModelUpdate">
               Cancel
             </VBtn>
           </VCol>
         </VRow>
       </VForm>
     </VCard>
+    <v-dialog
+      v-model="isCategoryModalOpen"
+    >
+      <v-card
+        prepend-icon="mdi-invoice-text-plus"
+        title="Create Category"
+      >
+       <VForm @submit.prevent="handleCategory" ref="categoryRef" >
+         <v-card-text>
+           <v-text-field
+             v-model="categoryName"
+             label="Category Name"
+             placeholder="Enter category name"
+             outlined
+             dense
+             :rules="[requiredValidator]"
+           ></v-text-field>
+         </v-card-text>
+
+         <!-- Actions (buttons) -->
+         <v-card-actions>
+           <v-spacer></v-spacer>
+           <v-btn
+             color="error"
+             @click="handelReset"
+           >
+             Cancel
+           </v-btn>
+           <v-btn
+             type="submit"
+             :loading="isLoaded"
+             class="custom-loader_color"
+             color="primary"
+           >
+             Create
+           </v-btn>
+         </v-card-actions>
+       </VForm>
+      </v-card>
+    </v-dialog>
   </VNavigationDrawer>
 </template>
 

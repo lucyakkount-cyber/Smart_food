@@ -9,9 +9,11 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 10%);
   inline-size: 80%;
   inset-block-start: 10%;
+  inset-inline-end: 10%;
   opacity: 1;
   pointer-events: auto;
   transition: opacity 0.3s ease-in-out;
+  right: 10%;
 }
 
 .modal-overlay {
@@ -192,6 +194,7 @@ body.closed .cafe-page {
   flex-wrap: wrap;
   align-content: flex-end;
   justify-content: space-between;
+  padding: 10px;
   background-color: var(--block-bg-color);
   margin-block: 0;
   margin-inline: auto;

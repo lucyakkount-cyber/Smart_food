@@ -39,11 +39,11 @@ let Cafe = {
 
       Telegram.WebApp.setHeaderColor("bg_color");
       const noop = function() {};
-      console.log = noop;
-      console.warn = noop;
-      console.error = noop;
-      console.info = noop;
-      console.debug = noop;
+      // console.log = noop;
+      // console.warn = noop;
+      // console.error = noop;
+      // console.info = noop;
+      // console.debug = noop;
       document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
       }, false);
@@ -201,7 +201,7 @@ let Cafe = {
       let id    = itemEl.data('item-id');
       let count = +itemEl.data('item-count') || 0;
       if (count > 0) {
-        order_data.push({id: id, count: count});
+        order_data.push({id, count});
       }
     });
     return JSON.stringify(order_data);
@@ -303,13 +303,33 @@ let Cafe = {
       if ($modal.is(':visible') && !$modal[0].contains(e.target)) {
         $modal.hide();
         $('.modal-window').hide();
+        resetModal()
       }
     });
 
     $('.close-btn, .modal-overlay').off('click').on('click', function () {
       $modal.hide();
       $('.modal-window').hide();
+      resetModal()
     });
+
+    function resetModal() {
+      // Clear text inputs
+      $('#itemName').val('');
+      $('#itemPrice').val('');
+      $('.js-order-description-field').val('');
+
+      // Reset image preview to default 'none'
+      $('#itemImage').attr('src', '/public/img/imageNotFound.png');
+
+      // Reset video preview to default 'none'
+      $('#itemVideo').attr('src', '/public/img/imageNotFound.png');
+
+      // Reset file inputs
+      $('#item_img').val('');
+      $('#item_video').val('');
+    }
+
 
     // Load current item data
     let cafeItem = $(this).closest('.cafe-item');
@@ -321,6 +341,7 @@ let Cafe = {
       let itemPrice = Cafe.formatNumber(cafeItem.data('item-price'), 2);
       let itemImage = cafeItem.find('img').attr('src');
       let itemVideo = `/public/img/stickers/${itemImage.replace('/public/img/', '').replace(/\.[^/.]+$/, '')}.webp`;
+      $('.js-order-description-field').val($cafeItem.attr('data-item-description'))
 
       $('#itemVideo').attr('src', '/public/img/loader.png');
 
@@ -350,7 +371,6 @@ let Cafe = {
       let itemPrice = $('#itemPrice').val();
       let itemImage = $('#item_img')[0].files[0];
       let itemVideo = $('#item_video')[0].files[0];
-      $('.js-order-description-field').val($cafeItem.attr('data-item-description'));
 
       let button = $(this);
       Cafe.toggleButtonLoading(button, true);
@@ -363,10 +383,10 @@ let Cafe = {
       formData.append('category', $cafeItem.attr('data-item-category'));
       formData.append('description', $('.js-order-description-field').val());
 
-      // Append image and video files if available
       if (itemImage) {
         formData.append('image', itemImage);
       }
+
       if (itemVideo) {
         formData.append('short_video', itemVideo);
       }
@@ -374,13 +394,17 @@ let Cafe = {
       // AJAX request
       const isEdit = method === 'edit_item';
       Cafe.apiRequest(isEdit ? 'put' : 'delete', formData, function (response,status) {
-        const feedback = (status.status  === 204 ||status?.success) ? 'success' : 'warning';
+
+        console.log(response)
+
+        const feedback = (status.status  === 204 || status?.success ) ? 'success' : 'warning';
         Telegram.WebApp.HapticFeedback.notificationOccurred(feedback);
 
         Cafe.toggleButtonLoading(button, false);
 
         if ((status.status  === 204 ||status?.success) && isEdit) {
           // Update UI with new item details
+          resetModal()
           $cafeItem.find('.cafe-item-title').text(itemName);
           $cafeItem.find('.cafe-item-price').text(`${itemPrice} SUM`);
           if (itemImage) {
@@ -398,12 +422,11 @@ let Cafe = {
           $cafeItem.hide();
           $modal.hide();
         }
-
         Cafe.showStatus(
-          (status?.status === 204 || response?.ok)
+          (status?.status === 204 || status?.status === 200 || !response.length)
             ? `Product ${isEdit ? 'updated' : 'deleted'} successfully`
             : 'Muammo yuzaga keldi',
-          (status.status  === 204 ||status?.success)
+          (status.status  === 204 || status?.success)
         )
 
       }, $cafeItem.attr('data-item-id'));
@@ -457,9 +480,9 @@ toggleButtonLoading: function($button, isLoading) {
 
 
 
-    $.ajax(Cafe.apiUrl + `${id || ''}/`, {
+    $.ajax(Cafe.apiUrl + `${id + '/' || ''}`, {
       type: type,
-      enctype     : "multipart/form-data",
+      enctype     : id ?  "multipart/form-data" : "application/x-www-form-urlencoded",
       processData: false, // Important: Do not process data (we're sending FormData)
       contentType: false, // Important: Do not set content type (let the browser set it)
       data: data, // Send the FormData object
