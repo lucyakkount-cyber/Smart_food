@@ -18,4 +18,10 @@
   <h1>Loading...</h1>
 </template>
 
+<style scoped>
+h1{
+  color: var(--tg-theme-text-color);
+}
+</style>
+
 
