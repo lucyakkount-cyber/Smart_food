@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import axios from "@/axios"; // Axios for API requests
 import AddNewDrawer from "@/views/BurgerKing/AddNewDrawer.vue";
 import Loading from "@/pages/loading.vue";
-import Cafe from "../../public/js/telegram";
+import Cafe from "/public/js/telegram";
 
 // Component state
 const categories = ref([]);

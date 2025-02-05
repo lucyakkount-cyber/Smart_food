@@ -388,20 +388,20 @@ let Cafe = {
       }
 
       if (itemVideo) {
-        formData.append('short_video', itemVideo);
+        formData.append('animation', itemVideo);
       }
 
-      // AJAX request
       const isEdit = method === 'edit_item';
       Cafe.apiRequest(isEdit ? 'put' : 'delete', formData, function (response,status) {
+        console.log(response)
 
 
-        const feedback = (status.status  === 204 || status?.success ) ? 'success' : 'warning';
+        const feedback = (status?.status  === 204 || status?.success ) ? 'success' : 'warning';
         Telegram.WebApp.HapticFeedback.notificationOccurred(feedback);
 
         Cafe.toggleButtonLoading(button, false);
 
-        if ((status.status  === 204 ||status?.success) && isEdit) {
+        if ((status?.status  === 204 ||status?.success) && isEdit) {
           // Update UI with new item details
           resetModal()
           $cafeItem.find('.cafe-item-title').text(itemName);
@@ -422,10 +422,10 @@ let Cafe = {
           $modal.hide();
         }
         Cafe.showStatus(
-          (status?.status === 204 || status?.status === 200 || !response.length)
+          (status?.status === 204 || status?.status === 200 )
             ? `Product ${isEdit ? 'updated' : 'deleted'} successfully`
-            : 'Muammo yuzaga keldi',
-          (status.status  === 204 || status?.success)
+            : response.error,
+          (status?.status  === 204 || status?.success)
         )
 
       }, $cafeItem.attr('data-item-id'));
@@ -485,12 +485,20 @@ toggleButtonLoading: function($button, isLoading) {
       processData: false, // Important: Do not process data (we're sending FormData)
       contentType: false, // Important: Do not set content type (let the browser set it)
       data: data, // Send the FormData object
-      success: function (result,textStatus ,jqXHR) {
-        onCallback && onCallback(result ,jqXHR);
+      success: function (result,textStatus ,status) {
+        onCallback && onCallback(result ,status);
 
       },
-      error: function () {
-        onCallback && onCallback({ error: 'Xatolik yuz berdi.' });
+      error: function (response, textStatus, status) {
+        let responseData = response.responseText ? JSON.parse(response.responseText) : {};
+
+        const errorMessages = Object.entries(responseData).map(([field, messages]) => {
+
+          return `${field.toUpperCase()} ${messages.join(' ')}`;
+        });
+
+        // Ensure the errorMessages array is passed or fallback to a default message if empty
+        onCallback && onCallback({ error: errorMessages.length > 0 ? errorMessages : ['An unknown error occurred'] }, status || 400);
       }
     });
   },
