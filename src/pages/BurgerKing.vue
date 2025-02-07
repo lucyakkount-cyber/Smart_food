@@ -13,40 +13,63 @@ const items = ref([]);
 const isLoading = ref(true);
 const activeCategory = ref(null);
 const userId = window?.Telegram?.WebApp?.initDataUnsafe.user?.id;
+const token = new URL(window.location.href).searchParams.get("token");
+const role = ref('')
+
+const loadUserInfo = async ()=>{
+  try {
+    const response = await axios.post(`/user/get_token/`,{
+      token: token
+    },{
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    loadCafeItems()
+    role.value = response.data.role
+  }catch (error){
+    console.error(error)
+  }
+}
 
 const loadCafeItems = async () => {
-  isLoading.value = true;
-  try {
-    const response = await axios.get("/api/products/");
-    orders.value =  response.data
+  if (role) {
+    isLoading.value = true;
+    try {
+      const response = await axios.get("/api/products/");
+      orders.value = response.data
 
-    const groupedItems = response.data.reduce((acc, item) => {
-      const categoryId = item.categories.id;
-      if (!acc[categoryId]) {
-        acc[categoryId] = { name: item.categories.name, items: [] };
-      }
-      acc[categoryId].items.push(item);
-      return acc;
-    }, {});
+      const groupedItems = response.data.reduce((acc, item) => {
+        const categoryId = item.categories.id;
+        if (!acc[categoryId]) {
+          acc[categoryId] = { name: item.categories.name, items: [] };
+        }
+        acc[categoryId].items.push(item);
+        return acc;
+      }, {});
 
-    items.value = groupedItems;
-    isLoading.value = false;
+      items.value = groupedItems;
+      isLoading.value = false;
 
-    setTimeout(() => {
-      Cafe.init({
-        apiUrl: import.meta.env.VITE_BASE_URL,
-        mode: "menu",
-        role: "admin",
-        userId: userId,
+      setTimeout(() => {
+        Cafe.init({
+          apiUrl: import.meta.env.VITE_BASE_URL,
+          mode: "menu",
+          role: role.value,
+          userId: userId,
+          token: token
+        });
+      }, 500);
+    } catch (error) {
+      console.error("Error loading cafe items:", error);
+      isLoading.value = false;
+      Telegram.WebApp?.showConfirm("Failed to load items. Please try again later.", (conformed) => {
+        if (conformed) Telegram.WebApp.close();
+        loadCafeItems();
       });
-    }, 500);
-  } catch (error) {
-    console.error("Error loading cafe items:", error);
-    isLoading.value = false;
-    Telegram.WebApp?.showConfirm("Failed to load items. Please try again later.", (conformed) => {
-      if (conformed) Telegram.WebApp.close();
-      loadCafeItems();
-    });
+    }
+  }else {
+    loadUserInfo()
   }
 }
 
@@ -103,13 +126,9 @@ const scrollNavbarToActive = () => {
 
 
 onMounted(() => {
-  loadCafeItems();
+  loadUserInfo();
   window.addEventListener("scroll", updateActiveCategory);
 });
-
-
-// Prevent all Ctrl key combinations
-
 </script>
 
 <template>
@@ -142,11 +161,27 @@ onMounted(() => {
       </v-btn>
     </v-row>
 
-    <v-row v-if="!items" class="d-flex justify-lg-center align-center">
-      <v-col cols="12" class="d-flex align-center">
-        No Data found
+    <v-row
+      v-if="!Object.values(items).some(category => category.items.length) && !isLoading"
+      class="d-flex justify-center align-center py-10"
+    >
+      <v-col cols="12" class="d-flex flex-column align-center text-center">
+        <v-icon color="grey lighten-2" size="48">mdi-emoticon-sad-outline</v-icon> <!-- Icon for no data -->
+        <span class="mt-4 text-h5 font-weight-bold text-grey darken-2">No Data Found</span>
+        <span class="mt-2 text-body-2 text-grey darken-1">It seems we couldn't find anything that you requested.</span>
+
+        <v-btn
+          v-if="role !== 'admin'"
+          class="mt-6"
+          color="primary"
+          style="height: 40px; border-radius: 20px"
+          @click="handleAddNewDrawer"
+        >
+          <v-icon left>mdi-plus</v-icon> Add New Item
+        </v-btn>
       </v-col>
     </v-row>
+
     <!--    Cafe items-->
     <div v-for="(category, categoryId) in items" :key="categoryId" class="cafe-items">
 
@@ -188,7 +223,7 @@ onMounted(() => {
         </div>
 
 
-<!--        for style-->
+<!--        for style idea of OTABEK 😁 -->
         <div class="cafe-item" style="width: 300px;height: 0">
 
         </div>

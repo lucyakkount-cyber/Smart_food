@@ -33,7 +33,7 @@ const isUpdating = ref(false);
 const selectedCategories = ref([]); // This should store selected category objects
 const people = ref([]); // This stores category data
 const formatData = () => {
-  const rawValue = formData.value.price.toString().replace(/\s+/g, "");
+  const rawValue = formData.value.price.toString().replace(/[^0-9]/g, "");
   formData.value.price = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
@@ -45,8 +45,8 @@ const onSubmit = async () => {
 
     const form = new FormData();
     form.append('name', formData.value.name);
-    form.append('image', formData.value.image[0]);
-    form.append('animation', formData.value.animation[0]);
+    form.append('image', formData.value.image[0] ?? '');
+    form.append('animation', formData.value.animation[0] ?? '');
     form.append('description', formData.value.description);
     form.append('special_offer', formData.value.special_offer)
     form.append('price', formData.value.price.replace(/ /g, ''))
@@ -189,7 +189,6 @@ onMounted(() => {
             <VFileInput
               label="Animation"
               v-model="formData.animation"
-              :rules="[requiredValidator]"
             />
           </VCol>
           <VCol cols="12">

@@ -9,7 +9,6 @@ let Cafe = {
   canPay: false,
   modeOrder: false,
   totalPrice: 0,
-  location: null,
 
   init: function(options) {
     Telegram.WebApp.ready();
@@ -17,6 +16,7 @@ let Cafe = {
     Cafe.role = options.role;
     Cafe.mode = options.mode;
     Cafe.userId = options.userId;
+    Cafe.token = options.token
 
     document.documentElement.className = Telegram.WebApp.colorScheme
 
@@ -249,6 +249,7 @@ let Cafe = {
         formData.append('comment', comment);
       }
       formData.append('user_id', `${Cafe.userId}`);
+      formData.append('token', `${Cafe.token}`);
 
 
 
@@ -337,7 +338,7 @@ let Cafe = {
       let itemName = cafeItem.find('.cafe-item-title').text();
       let itemPrice = Cafe.formatNumber(cafeItem.data('item-price'));
       let itemImage = cafeItem.find('img').attr('src');
-      let itemVideo = `/public/img/stickers/${itemImage.replace('/public/img/', '').replace(/\.[^/.]+$/, '')}.webp`;
+      let itemVideo = cafeItem.find('img').attr('data-item-short')
       $('.js-order-description-field').val($cafeItem.attr('data-item-description'))
 
       $('#itemVideo').attr('src', '/public/img/loader.png');
