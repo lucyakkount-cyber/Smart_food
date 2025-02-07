@@ -21,7 +21,7 @@ let Cafe = {
     document.documentElement.className = Telegram.WebApp.colorScheme
 
     $('.js-item-lottie').on('click', Cafe.eLottieClicked);
-    if (Cafe.role === 'admin')$('.js-item-lottie').on('contextmenu', Cafe.Edit);
+    if (Cafe.role !== 'admin')$('.js-item-lottie').on('contextmenu', Cafe.Edit);
     $('.js-item-incr-btn').on('click', Cafe.eIncrClicked);
     $('.js-item-decr-btn').on('click', Cafe.eDecrClicked);
     $('.cafe-order-edit').on('click', Cafe.eEditClicked);
@@ -37,7 +37,7 @@ let Cafe = {
     if (Telegram.WebApp.version > 6){
 
       Telegram.WebApp.setHeaderColor("bg_color");
-      const noop = function() {};
+      // const noop = function() {};
       // console.log = noop;
       // console.warn = noop;
       // console.error = noop;
@@ -301,14 +301,14 @@ let Cafe = {
       if ($modal.is(':visible') && !$modal[0].contains(e.target)) {
         $modal.hide();
         $('.modal-window').hide();
-        resetModal()
+        resetModal();
       }
     });
 
     $('.close-btn, .modal-overlay').off('click').on('click', function () {
       $modal.hide();
       $('.modal-window').hide();
-      resetModal()
+      resetModal();
     });
 
     function resetModal() {
@@ -328,6 +328,12 @@ let Cafe = {
       $('#item_video').val('');
     }
 
+    // Function to format the price
+    const formatPrice = (price) => {
+      const rawValue = price.toString().replace(/[^0-9]/g, "");
+      return rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    };
+
 
     // Load current item data
     let cafeItem = $(this).closest('.cafe-item');
@@ -336,10 +342,11 @@ let Cafe = {
       $('.modal-window').show();
 
       let itemName = cafeItem.find('.cafe-item-title').text();
-      let itemPrice = Cafe.formatNumber(cafeItem.data('item-price'));
+      let itemPrice = cafeItem.data('item-price'); // Get raw price value
+      let formattedPrice = formatPrice(itemPrice); // Format the price
       let itemImage = cafeItem.find('img').attr('src');
-      let itemVideo = cafeItem.find('img').attr('data-item-short')
-      $('.js-order-description-field').val($cafeItem.attr('data-item-description'))
+      let itemVideo = cafeItem.find('img').attr('data-item-short');
+      $('.js-order-description-field').val($cafeItem.attr('data-item-description'));
 
       $('#itemVideo').attr('src', '/public/img/loader.png');
 
@@ -354,7 +361,7 @@ let Cafe = {
       video.src = itemVideo;
 
       $('#itemName').val(itemName);
-      $('#itemPrice').val(itemPrice);
+      $('#itemPrice').val(formattedPrice); // Set formatted price in the input
       $('#itemImage')
         .attr('src', itemImage)
         .on('error', function () {
@@ -367,6 +374,7 @@ let Cafe = {
       let itemName = $('#itemName').val();
       const method = $(this).attr('data-item-btn') + '_item';
       let itemPrice = $('#itemPrice').val();
+      let formattedPrice = formatPrice(itemPrice).trim(); // Format the price before sending
       let itemImage = $('#item_img')[0].files[0];
       let itemVideo = $('#item_video')[0].files[0];
 
@@ -377,7 +385,7 @@ let Cafe = {
       let formData = new FormData();
       formData.append('id', $cafeItem.attr('data-item-id'));
       formData.append('name', itemName);
-      formData.append('price', itemPrice);
+      formData.append('price', formattedPrice.toString().replace(/\s/g, "")); // Use formatted price
       formData.append('category', $cafeItem.attr('data-item-category'));
       formData.append('description', $('.js-order-description-field').val());
 
@@ -390,20 +398,18 @@ let Cafe = {
       }
 
       const isEdit = method === 'edit_item';
-      const id = $cafeItem.attr('data-item-id')
-      Cafe.apiRequest(Cafe.apiUrl+`api/products/${id}/`,isEdit ? 'put' : 'delete', formData, function (response,status) {
-
-
-        const feedback = (status?.status  === 204 || status?.success ) ? 'success' : 'warning';
+      const id = $cafeItem.attr('data-item-id');
+      Cafe.apiRequest(Cafe.apiUrl + `api/products/${id}/`, isEdit ? 'put' : 'delete', formData, function (response, status) {
+        const feedback = (status?.status === 204 || status?.success) ? 'success' : 'warning';
         Telegram.WebApp.HapticFeedback.notificationOccurred(feedback);
 
         Cafe.toggleButtonLoading(button, false);
 
-        if ((status?.status  === 204 ||status?.success) && isEdit) {
+        if ((status?.status === 204 || status?.success) && isEdit) {
           // Update UI with new item details
-          resetModal()
+          resetModal();
           $cafeItem.find('.cafe-item-title').text(itemName);
-          $cafeItem.find('.cafe-item-price').text(`${itemPrice} SUM`);
+          $cafeItem.find('.cafe-item-price').text(`${formattedPrice} SUM`); // Use formatted price
           if (itemImage) {
             let reader = new FileReader();
             reader.onload = function (e) {
@@ -420,12 +426,11 @@ let Cafe = {
           $modal.hide();
         }
         Cafe.showStatus(
-          (status?.status === 204 || status?.status === 200 )
+          (status?.status === 204 || status?.status === 200)
             ? `Product ${isEdit ? 'updated' : 'deleted'} successfully`
             : response.error,
-          (status?.status  === 204 || status?.success)
-        )
-
+          (status?.status === 204 || status?.success)
+        );
       });
     });
 
@@ -437,7 +442,6 @@ let Cafe = {
       Cafe.handleFilePreview(this.files[0], $('#itemVideo'));
     });
   },
-
   handleFilePreview: function(file, $previewElement) {
   let reader = new FileReader();
   reader.onload = function (e) {
@@ -599,13 +603,12 @@ toggleButtonLoading: function($button, isLoading) {
 };
 
 
-document.addEventListener("input", function (e) {
+  document.addEventListener("input", function (e) {
   if (e.target.classList.contains("js-order-comment-field")) {
     e.target.style.height = "auto";
     e.target.style.height = e.target.scrollHeight + "px";
   }
 });
-
 
 
 export default Cafe

@@ -7,6 +7,7 @@ import Cafe from "/public/js/telegram";
 
 // Component state
 const categories = ref([]);
+const input = ref('')
 const isAddNewDrawerVisible = ref(false);
 const orders = ref([]);
 const items = ref([]);
@@ -15,6 +16,10 @@ const activeCategory = ref(null);
 const userId = window?.Telegram?.WebApp?.initDataUnsafe.user?.id;
 const token = new URL(window.location.href).searchParams.get("token");
 const role = ref('')
+const formatData = () => {
+  const rawValue = input.value.toString().replace(/[^0-9]/g, "");
+  input.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
 
 const loadUserInfo = async ()=>{
   try {
@@ -265,8 +270,9 @@ onMounted(() => {
                 id="itemPrice"
                 type="text"
                 name="itemPrice"
-                value="0.00"
-                onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46 || event.charCode === 44"
+                v-model="input"
+                @input="formatData"
+                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 required="required"
                 autocomplete="off"
                 class="input-field"
@@ -278,7 +284,7 @@ onMounted(() => {
                 class="cafe-text-field js-order-description-field cafe-block"
                 rows="1"
                 placeholder="Hech qandaqa ma'lumot yoq"
-                style="overflow: hidden; overflow-wrap: break-word; height: 46px; background: white; color: black"
+                style="overflow: hidden; overflow-wrap: break-word; height: 70px; border-radius: 6px; background: white; color: black"
               />
             </div>
           </div>
