@@ -33,6 +33,9 @@ const loadUserInfo = async ()=>{
     loadCafeItems()
     role.value = response.data.role
   }catch (error){
+    Telegram?.WebApp?.showConfirm('Muamo yuzaga keldi iltimos qytatdan urinib ko`ring',((ok)=>{
+      if (ok) Telegram?.WebApp?.close()
+    }))
     console.error(error)
   }
 }
@@ -68,7 +71,7 @@ const loadCafeItems = async () => {
     } catch (error) {
       console.error("Error loading cafe items:", error);
       isLoading.value = false;
-      Telegram.WebApp?.showConfirm("Failed to load items. Please try again later.", (conformed) => {
+      Telegram.WebApp?.showConfirm("Muamo yuzaga keldi iltimos keyinroq urinib ko'ring.", (conformed) => {
         if (conformed) Telegram.WebApp.close();
         loadCafeItems();
       });

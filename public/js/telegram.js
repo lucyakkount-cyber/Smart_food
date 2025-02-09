@@ -254,7 +254,7 @@ let Cafe = {
 
 
       Cafe.toggleLoading(true);
-      Cafe.apiRequest('/','post', formData, function(result) {
+      Cafe.apiRequest(Cafe.apiUrl+ '/','post', formData, function(result) {
         Cafe.toggleLoading(false);
         if (result.ok) {
           if (Cafe.mode === 'inline') {
