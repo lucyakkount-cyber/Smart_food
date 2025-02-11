@@ -1,12 +1,15 @@
 <script setup>
-const props = defineProps(["count"]);
+const props = defineProps(["count"])
 </script>
 
 <template>
   <tbody>
     <tr class="skeleton__list">
-      <td class="px-2" v-for="n in props.count || 1">
-        <div class="skeleton__list__item"></div>
+      <td
+        v-for="n in props.count || 1"
+        class="px-2"
+      >
+        <div class="skeleton__list__item" />
       </td>
     </tr>
   </tbody>

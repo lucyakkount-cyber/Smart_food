@@ -1,14 +1,14 @@
 <script setup>
-import avatar1 from "@images/avatars/avatar-1.png";
-import { useRouter } from "vue-router";
+import avatar1 from "@images/avatars/avatar-1.png"
+import { useRouter } from "vue-router"
 
-const router = useRouter();
+const router = useRouter()
 
 const handleLogOut = () => {
-  localStorage.removeItem("userData");
-  localStorage.removeItem("token");
-  router.push({ name: "Login" });
-};
+  localStorage.removeItem("userData")
+  localStorage.removeItem("token")
+  router.push({ name: "Login" })
+}
 </script>
 
 <template>
@@ -20,11 +20,20 @@ const handleLogOut = () => {
     color="success"
     bordered
   >
-    <VAvatar class="cursor-pointer" color="primary" variant="tonal">
+    <VAvatar
+      class="cursor-pointer"
+      color="primary"
+      variant="tonal"
+    >
       <VImg :src="avatar1" />
 
       <!-- SECTION Menu -->
-      <VMenu activator="parent" width="230" location="bottom end" offset="14px">
+      <VMenu
+        activator="parent"
+        width="230"
+        location="bottom end"
+        offset="14px"
+      >
         <VList>
           <!-- 👉 User Avatar & Name -->
           <VListItem>
@@ -37,7 +46,10 @@ const handleLogOut = () => {
                   offset-y="3"
                   color="success"
                 >
-                  <VAvatar color="primary" variant="tonal">
+                  <VAvatar
+                    color="primary"
+                    variant="tonal"
+                  >
                     <VImg :src="avatar1" />
                   </VAvatar>
                 </VBadge>
@@ -54,7 +66,11 @@ const handleLogOut = () => {
           <!-- 👉 Profile -->
           <VListItem link>
             <template #prepend>
-              <VIcon class="me-2" icon="bx-user" size="22" />
+              <VIcon
+                class="me-2"
+                icon="bx-user"
+                size="22"
+              />
             </template>
 
             <VListItemTitle>Profile</VListItemTitle>
@@ -63,7 +79,11 @@ const handleLogOut = () => {
           <!-- 👉 Settings -->
           <VListItem link>
             <template #prepend>
-              <VIcon class="me-2" icon="bx-cog" size="22" />
+              <VIcon
+                class="me-2"
+                icon="bx-cog"
+                size="22"
+              />
             </template>
 
             <VListItemTitle>Settings</VListItemTitle>
@@ -72,7 +92,11 @@ const handleLogOut = () => {
           <!-- 👉 Pricing -->
           <VListItem link>
             <template #prepend>
-              <VIcon class="me-2" icon="bx-dollar" size="22" />
+              <VIcon
+                class="me-2"
+                icon="bx-dollar"
+                size="22"
+              />
             </template>
 
             <VListItemTitle>Pricing</VListItemTitle>
@@ -81,7 +105,11 @@ const handleLogOut = () => {
           <!-- 👉 FAQ -->
           <VListItem link>
             <template #prepend>
-              <VIcon class="me-2" icon="bx-help-circle" size="22" />
+              <VIcon
+                class="me-2"
+                icon="bx-help-circle"
+                size="22"
+              />
             </template>
 
             <VListItemTitle>FAQ</VListItemTitle>
@@ -93,7 +121,11 @@ const handleLogOut = () => {
           <!-- 👉 Logout -->
           <VListItem @click="handleLogOut">
             <template #prepend>
-              <VIcon class="me-2" icon="bx-log-out" size="22" />
+              <VIcon
+                class="me-2"
+                icon="bx-log-out"
+                size="22"
+              />
             </template>
 
             <VListItemTitle>Logout</VListItemTitle>

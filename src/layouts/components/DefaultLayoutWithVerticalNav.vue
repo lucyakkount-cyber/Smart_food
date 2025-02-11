@@ -1,22 +1,22 @@
 <script setup>
-import { useTheme } from "vuetify";
-import upgradeBannerDark from "@images/pro/upgrade-banner-dark.png";
-import upgradeBannerLight from "@images/pro/upgrade-banner-light.png";
-import VerticalNavLayout from "@layouts/components/VerticalNavLayout.vue";
-import VerticalNavLink from "@layouts/components/VerticalNavLink.vue";
+import { useTheme } from "vuetify"
+import upgradeBannerDark from "@images/pro/upgrade-banner-dark.png"
+import upgradeBannerLight from "@images/pro/upgrade-banner-light.png"
+import VerticalNavLayout from "@layouts/components/VerticalNavLayout.vue"
+import VerticalNavLink from "@layouts/components/VerticalNavLink.vue"
 
 // Components
-import Footer from "@/layouts/components/Footer.vue";
-import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
-import UserProfile from "@/layouts/components/UserProfile.vue";
+import Footer from "@/layouts/components/Footer.vue"
+import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue"
+import UserProfile from "@/layouts/components/UserProfile.vue"
 
-const vuetifyTheme = useTheme();
+const vuetifyTheme = useTheme()
 
 const upgradeBanner = computed(() => {
   return vuetifyTheme.global.name.value === "light"
     ? upgradeBannerLight
-    : upgradeBannerDark;
-});
+    : upgradeBannerDark
+})
 </script>
 
 <template>
@@ -75,7 +75,6 @@ const upgradeBanner = computed(() => {
           to: {name: 'Categories'},
         }"
       />
-
     </template>
 
     <!-- 👉 Pages -->

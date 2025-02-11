@@ -7,7 +7,7 @@ const { global } = useTheme()
 </script>
 
 <template>
-  <VApp :style="`background:transparent; color:white`">
+  <VApp style="background:transparent; color:white">
     <RouterView />
   </VApp>
 </template>
