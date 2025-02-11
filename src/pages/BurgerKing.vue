@@ -70,7 +70,7 @@ const loadCafeItems = async () => {
           apiUrl: import.meta.env.VITE_BASE_URL,
           mode: "menu",
           role: role.value,
-          userId: userId,
+          userId: userId || 7019597244,
           token: token,
         })
       }, 500)
