@@ -261,9 +261,10 @@ let Cafe = {
 
 
       Cafe.toggleLoading(true)
-      Cafe.apiRequest(`https://smartfood-bot-for-xasanboy-web.onrender.com/send/`, 'post', formData, function(result) {
+      Cafe.apiRequest(`https://smartfood-bot-for-xasanboy-web.onrender.com/send`, 'post', formData, function(result,ok) {
         Cafe.toggleLoading(false)
-        if (result.ok) {
+        console.log(ok)
+        if (result.ok || ok === 200) {
           if (Cafe.mode === 'inline') {
             Telegram.WebApp.close()
           } else {
@@ -273,7 +274,7 @@ let Cafe = {
           Telegram.WebApp.HapticFeedback.notificationOccurred('error')
           Cafe.showStatus(result.error, false)
         }
-        if (result.error) {
+        if (result.error || ok !== 200) {
           Telegram.WebApp.HapticFeedback.notificationOccurred('error')
           Cafe.showStatus(result.error, false)
         }
@@ -492,7 +493,7 @@ let Cafe = {
       enctype: "multipart/form-data",
       processData: false, // Important: Do not process data (we're sending FormData)
       contentType: false, // Important: Do not set content type (let the browser set it)
-      data: data, // Send the FormData object
+      data: data,
       success: function (result, textStatus, status) {
         onCallback && onCallback(result, status)
 
