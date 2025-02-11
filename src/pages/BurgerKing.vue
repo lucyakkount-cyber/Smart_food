@@ -38,8 +38,9 @@ const loadUserInfo = async ()=>{
   }catch (error){
     Telegram?.WebApp?.showConfirm('Muamo yuzaga keldi iltimos qaytatdan urinib ko`ring', (ok=>{
       if (ok) Telegram?.WebApp?.close()
+      loadCafeItems()
     }))
-    loadCafeItems()
+
     console.error(error)
   }
 }
