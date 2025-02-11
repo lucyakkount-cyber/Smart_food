@@ -15,7 +15,7 @@ const isLoading = ref(true)
 const activeCategory = ref(null)
 const userId = window?.Telegram?.WebApp?.initDataUnsafe.user?.id
 const token = new URL(window.location.href).searchParams.get("token")
-const role = ref('')
+const role = ref('admin')
 
 const formatData = () => {
   const rawValue = input.value.toString().replace(/[^0-9]/g, "")
@@ -23,26 +23,26 @@ const formatData = () => {
   input.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
 }
 
-const loadUserInfo = async ()=>{
-  try {
-    const response = await axios.post(`/user/get_token/`, {
-      token: token,
-    }, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-
-    loadCafeItems()
-    role.value = response.data.role
-  }catch (error){
-    Telegram?.WebApp?.showConfirm('Muamo yuzaga keldi iltimos qaytatdan urinib ko`ring', (ok=>{
-      if (ok) Telegram?.WebApp?.close()
-    }))
-
-    console.error(error)
-  }
-}
+// const loadUserInfo = async ()=>{
+//   try {
+//     const response = await axios.post(`/user/get_token/`, {
+//       token: token,
+//     }, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     })
+//
+//     loadCafeItems()
+//     role.value = response.data.role
+//   }catch (error){
+//     Telegram?.WebApp?.showConfirm('Muamo yuzaga keldi iltimos qaytatdan urinib ko`ring', (ok=>{
+//       if (ok) Telegram?.WebApp?.close()
+//     }))
+//
+//     console.error(error)
+//   }
+// }
 
 const loadCafeItems = async () => {
   if (role.value) {
@@ -142,7 +142,7 @@ const scrollNavbarToActive = () => {
 
 onMounted(() => {
   loadCafeItems()
-  loadUserInfo()
+  // loadUserInfo()
   window.addEventListener("scroll", updateActiveCategory)
 })
 </script>
