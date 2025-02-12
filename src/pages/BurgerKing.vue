@@ -4,6 +4,7 @@ import axios from "@/axios" // Axios for API requests
 import AddNewDrawer from "@/views/BurgerKing/AddNewDrawer.vue"
 import Loading from "@/pages/loading.vue"
 import Cafe from "/public/js/telegram"
+import Telegram from "/public/js/telegram"
 
 // Component state
 const categories = ref([])
@@ -72,7 +73,7 @@ const loadCafeItems = async () => {
           apiUrl: import.meta.env.VITE_BASE_URL,
           mode: "menu",
           role: role.value,
-          userId: userId || 7019597244,
+          userId: userId || Telegram?.WebApp?.initDataUnsafe?.user?.id,
           token: token,
         })
       }, 500)
