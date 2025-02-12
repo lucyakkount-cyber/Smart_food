@@ -248,7 +248,7 @@ let Cafe = {
 
       let param = JSON.parse(Cafe.getOrderData())
 
-      const formData = new URLSearchParams()
+      const formData = new FormData()
 
       formData.append('data', JSON.stringify(param))
       if (comment.length > 0) {

@@ -13,9 +13,11 @@ const orders = ref([])
 const items = ref([])
 const isLoading = ref(true)
 const activeCategory = ref(null)
-const userId = window?.Telegram?.WebApp?.initDataUnsafe.user?.id
+const userId = window.Telegram?.WebApp?.initDataUnsafe.user?.id
 const token = new URL(window.location.href).searchParams.get("token")
 const role = ref('admin')
+
+
 
 const formatData = () => {
   const rawValue = input.value.toString().replace(/[^0-9]/g, "")
@@ -367,7 +369,6 @@ onMounted(() => {
                 v-model="input"
                 type="text"
                 name="itemPrice"
-                onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                 required="required"
                 autocomplete="off"
                 class="input-field"
