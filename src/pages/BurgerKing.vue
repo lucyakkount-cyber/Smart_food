@@ -72,7 +72,7 @@ const loadCafeItems = async () => {
         Cafe.init({
           apiUrl: import.meta.env.VITE_BASE_URL,
           mode: "menu",
-          role: role.value,
+          role: "user" ||role.value,
           userId: userId || Telegram?.WebApp?.initDataUnsafe?.user?.id,
           token: token,
         })
@@ -453,8 +453,8 @@ onMounted(() => {
             </div>
           </div>
           <div>
-            <div class="cafe-order-item-price js-order-item-price">
-              {{ parseFloat(order.price).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') }} <span> SUM</span>
+              <div class="cafe-order-item-price js-order-item-price">
+                {{ parseFloat(order.price).toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,') }} <span> SUM</span>
             </div>
             <div
               class="cafe-item-buttons"
