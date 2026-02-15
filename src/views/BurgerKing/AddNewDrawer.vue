@@ -20,8 +20,8 @@ const categoryRef = ref()
 
 const formData = ref({
   name: "",
-  image: "",
-  animation: "",
+  image: [],
+  animation: [],
   category: [],
   special_offer: 1,
   price: '',
@@ -89,7 +89,7 @@ const handleModelUpdate = val => {
     nextTick(() => {
       formRef.value?.reset()
       formRef.value?.resetValidation()
-      formData.value = { name: "", image: null, animation: null, category: [] }
+      formData.value = { name: "", image: [], animation: [], category: [] }
       selectedCategories.value = []
     })
   }
@@ -242,7 +242,7 @@ onMounted(() => {
             </VBtn>
             <VBtn
               color="secondary"
-              @click="handleModelUpdate"
+              @click="handleModelUpdate(false)"
             >
               Cancel
             </VBtn>

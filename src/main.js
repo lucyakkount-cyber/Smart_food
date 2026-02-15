@@ -7,6 +7,7 @@ import router from '@/router'
 import '@core/scss/template/index.scss'
 import '@layouts/styles/index.scss'
 import '@styles/styles.scss'
+import '@/plugins/mockServer' // Initialize mock server
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 

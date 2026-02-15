@@ -248,35 +248,143 @@ let Cafe = {
 
       let param = JSON.parse(Cafe.getOrderData())
 
-      const formData = new FormData()
+      // Retrieve user data with fallbacks and debugging
+      const initDataUser = Telegram.WebApp.initDataUnsafe?.user
 
-      formData.append('data', JSON.stringify(param))
-      if (comment.length > 0) {
-        formData.append('comment', comment)
+      // DEBUG: Verify what Telegram is actually providing
+      // alert(`Debug User Data:\nID: ${initDataUser?.id}\nUsername: ${initDataUser?.username}\nFirst Name: ${initDataUser?.first_name}`);
+
+      let username = initDataUser?.username ? `@${initDataUser.username}` : null
+      let firstName = initDataUser?.first_name || ''
+      let userId = Cafe.userId || initDataUser?.id || 'Unknown ID'
+
+      // If no identifier found, ask the user (useful for testing/browser)
+      if (!username && !firstName) {
+        const manualName = prompt('Could not detect Telegram Name. Please enter your name:', 'Guest')
+        username = manualName || 'Anonymous'
       }
-      formData.append('user_id', `${Cafe.userId}`)
-      formData.append('token', `${Cafe.token}`)
-      formData.append('message_id', `21`)
 
+      // Construct HTML message for the order
+      let messageText = `<b>New Order Received</b>\n\n`
+      messageText += `<b>Customer:</b> ${firstName} ${username ? `(${username})` : ''}\n`
+      messageText += `<b>ID:</b> <code>${userId}</code>\n`
+      messageText += `<b>Comment:</b> ${comment || 'None'}\n\n`
+      messageText += `<b>Order Details:</b>\n`
 
+      let total = 0;
+      param.forEach(item => {
+        // item string is "id:count". We need to look up details if possible, or just send IDs.
+        // But param is the raw "id:count" array. We should probably parse it better or use data from DOM.
+        // The original logic just sent IDs. To make it readable, let's try to map it if we can,
+        // but `param` only has ID. The DOM has the names.
+        // Let's rely on the previous loop or just send the raw data for now, 
+        // OR better: Iterate over the DOM elements again to build the string?
+        // Actually, the simplest way is to iterate '.js-item' again or use the data we have.
+        // Let's iterate the DOM to get names.
+      });
 
-      Cafe.toggleLoading(true)
-      Cafe.apiRequest(`https://smartfood-bot-for-xasanboy-web.onrender.com/send`, 'post', formData, function(result,ok) {
-        Cafe.toggleLoading(false)
-        console.log(ok)
-        if (result.ok || ok === 200) {
-          if (Cafe.mode === 'inline') {
-            Telegram.WebApp.close()
-          } else {
-            Telegram.WebApp.close()
-          }
-        }else {
-          Telegram.WebApp.HapticFeedback.notificationOccurred('error')
-          Cafe.showStatus(result.error, false)
+       // Re-iterate DOM to get readable order details
+      $('.js-item').each(function() {
+        let itemEl = $(this)
+        let count = +itemEl.data('item-count') || 0
+        if (count > 0) {
+           let name = itemEl.find('.cafe-item-title').text().trim();
+           let price = itemEl.data('item-price');
+           messageText += `- ${name}: ${count} x ${price} = ${count * price}\n`;
+           total += count * price;
         }
-        if (result.error || ok !== 200) {
-          Telegram.WebApp.HapticFeedback.notificationOccurred('error')
-          Cafe.showStatus(result.error, false)
+      })
+
+      messageText += `\n<b>Total:</b> ${Cafe.formatPrice(total)}`;
+
+      // Telegram Bot API Configuration
+      const BOT_TOKEN = '7597572171:AAGWWqs1QXK3MdVqwr_EV42igxoxkNkaguI'; // Replace with your actual bot token
+      // Use Cafe.userId if available, otherwise fallback to the provided test ID
+      const CHAT_ID = Cafe.userId || Telegram.WebApp.initDataUnsafe.user?.id || '7019597244';
+
+      Telegram.WebApp.showConfirm(`Send Order?`, function(confirm) {
+        if (confirm) {
+          Cafe.toggleLoading(true)
+          
+          // Debug: Alert starting process
+
+          // Find the first item with an image to send
+          let firstItemImage = null
+          $('.js-item').each(function() {
+            let count = +$(this).data('item-count') || 0
+            if (count > 0 && !firstItemImage) {
+              let src = $(this).find('img').attr('src')
+              if (src) firstItemImage = src
+            }
+          })
+
+          // Helper to send request
+          const sendRequest = (formData) => {
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+              method: 'POST',
+              body: formData,
+            })
+              .then(response => response.json())
+              .then(data => {
+                Cafe.toggleLoading(false)
+                if (data.ok) {
+                  Telegram.WebApp.close()
+                } else {
+                  alert(`Telegram Error: ${data.description}`)
+                }
+              })
+              .catch(error => {
+                Cafe.toggleLoading(false)
+                alert(`Network/Fetch Error: ${error.message}`)
+              })
+          }
+
+          if (firstItemImage) {
+            // Fetch the image to send as a photo
+            fetch(firstItemImage)
+              .then(res => res.blob())
+              .then(blob => {
+                const formData = new FormData()
+                formData.append('chat_id', CHAT_ID)
+                formData.append('photo', blob, 'order.jpg')
+                formData.append('caption', messageText)
+                formData.append('parse_mode', 'HTML')
+                sendRequest(formData)
+              })
+              .catch(e => {
+                // Fallback to sendMessage if image fails
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: messageText,
+                    parse_mode: 'HTML',
+                  }),
+                })
+                  .then(r => r.json())
+                  .then(d => {
+                    if (d.ok) Telegram.WebApp.close()
+                    else alert(`Text Fallback Error: ${d.description}`)
+                  })
+              })
+          } else {
+            // No image found, send text only
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: messageText,
+                parse_mode: 'HTML',
+              }),
+            })
+              .then(r => r.json())
+              .then(d => {
+                if (d.ok) Telegram.WebApp.close()
+                else alert(`Text Error: ${d.description}`)
+              })
+          }
         }
       })
     } else {
