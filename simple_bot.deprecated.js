@@ -7,7 +7,7 @@ const token = '7597572171:AAGWWqs1QXK3MdVqwr_EV42igxoxkNkaguI';
 const bot = new TelegramBot(token, {polling: true});
 
 
-const webAppUrl = 'https://smartfood-bot-for-xasanboy-web.onrender.com';
+const webAppUrl = 'https://smart-food-96ub.vercel.app/';
 
 
 bot.on('message', (msg) => {
