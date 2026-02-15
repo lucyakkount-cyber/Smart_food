@@ -32,3 +32,4 @@ import misc404 from '@images/pages/404.png'
 <style lang="scss">
 @use "@core/scss/template/pages/misc.scss";
 </style>
+//done

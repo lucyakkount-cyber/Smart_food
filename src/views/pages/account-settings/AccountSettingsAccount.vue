@@ -37,7 +37,7 @@ const changeAvatar = file => {
   }
 }
 
-// reset avatar image
+
 const resetAvatar = () => {
   accountDataLocal.value.avatarImg = accountData.avatarImg
 }
@@ -358,3 +358,4 @@ const currencies = [
     </VCol>
   </VRow>
 </template>
+//done

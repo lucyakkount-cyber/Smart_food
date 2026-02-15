@@ -1,7 +1,7 @@
 import { hexToRgb } from '@layouts/utils'
 
 
-// 👉 Colors variables
+
 const colorVariables = themeColors => {
   const themeSecondaryTextColor = `rgba(${hexToRgb(themeColors.colors['on-surface'])},${themeColors.variables['medium-emphasis-opacity']})`
   const themeDisabledTextColor = `rgba(${hexToRgb(themeColors.colors['on-surface'])},${themeColors.variables['disabled-opacity']})`
@@ -679,3 +679,4 @@ export const getRadarChartConfig = themeColors => {
     },
   }
 }
+//done

@@ -45,7 +45,7 @@ const theme = {
         'tooltip-opacity': 0.9,
         'table-header-background': '#F5F5F7',
 
-        // Shadows
+        
         'shadow-key-umbra-opacity': 'rgba(var(--v-theme-on-surface), 0.06)',
         'shadow-key-penumbra-opacity': 'rgba(var(--v-theme-on-surface), 0.04)',
         'shadow-key-ambient-opacity': 'rgba(var(--v-theme-on-surface), 0.02)',
@@ -94,7 +94,7 @@ const theme = {
         'tooltip-opacity': 0.9,
         'table-header-background': '#3A3E5B',
 
-        // Shadows
+        
         'shadow-key-umbra-opacity': 'rgba(20, 21, 33, 0.06)',
         'shadow-key-penumbra-opacity': 'rgba(20, 21, 33, 0.04)',
         'shadow-key-ambient-opacity': 'rgba(20, 21, 33, 0.02)',
@@ -104,3 +104,4 @@ const theme = {
 }
 
 export default theme
+//done

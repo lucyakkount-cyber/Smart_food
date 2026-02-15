@@ -18,9 +18,9 @@
 
 .modal-overlay {
   position: fixed;
-  z-index: 100; /* Ensures it covers everything */
+  z-index: 100; 
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 50%); /* 0.5 opacity black background */
+  background-color: rgba(0, 0, 0, 50%); 
   block-size: 100%;
   inline-size: 100%;
   inset-block-start: 0;
@@ -319,25 +319,25 @@ body.order-mode .cafe-items {
   white-space: nowrap;
 }
 
-/* .cafe-item-price:before { */
 
-/*  display: inline-block; */
 
-/*  vertical-align: top; */
 
-/*  content: ''; */
 
-/*  width: 2px; */
 
-/*  height: 2px; */
 
-/*  border-radius: 2px; */
 
-/*  background-color: currentColor; */
 
-/*  margin: 7px 4px; */
 
-/* } */
+
+
+
+
+
+
+
+
+
+
 .cafe-item-buttons {
   position: relative;
   display: flex;
@@ -475,7 +475,7 @@ button,
   transform: translateY(var(--tg-viewport-height, 100vh));
 }
 
-/* Base style for the .cafe-status */
+
 .cafe-status {
   position: fixed;
   z-index: 11;
@@ -496,19 +496,19 @@ button,
   visibility: hidden;
 }
 
-/* Red status color */
+
 .cafe-status.error {
   background-color: #e64d44;
   box-shadow: 0 var(--status-height) #e64d44;
 }
 
-/* Green status color */
+
 .cafe-status.success {
   background-color: #67e644;
   box-shadow: 0 var(--status-height) #62e644;
 }
 
-/* Shown class to make it visible */
+
 .cafe-status.shown {
   pointer-events: auto;
   transform: translateY(0);
@@ -862,17 +862,17 @@ body.loading .loading-icon {
 
 .spinner {
   display: flex;
-  border: 2px solid #f3f3f3; /* Light background for the spinner */
+  border: 2px solid #f3f3f3; 
   border-radius: 50%;
   animation: spin 1s linear infinite;
   block-size: 15px;
-  border-block-start: 2px solid #3498db; /* Blue color for the spinner */
+  border-block-start: 2px solid #3498db; 
   inline-size: 15px;
   margin-inline-end: 10px;
   vertical-align: middle;
 }
 
-/* Animation for the spinner */
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -897,7 +897,7 @@ h1 {
     1px 1px 0 #000;
 }
 
-/* Hamburger */
+
 
 .hamburger {
   block-size: 165px;
@@ -948,7 +948,7 @@ h1 {
   animation: animate-bottom-bun 9s infinite;
 }
 
-/* Top Bun */
+
 
 .hamburger .top-bun {
   position: absolute;
@@ -981,7 +981,7 @@ h1 {
   transform: translate(85px, 15px) rotate(-30deg);
 }
 
-/* Pickles */
+
 
 .hamburger .pickle,
 .hamburger .pickle::before {
@@ -1012,7 +1012,7 @@ h1 {
   transform: translate(20px, -18px) rotate(40deg);
 }
 
-/* Tomatoes */
+
 
 .hamburger .tomato,
 .hamburger .tomato::before {
@@ -1069,7 +1069,7 @@ h1 {
   transform: translate(-8px, -7px);
 }
 
-/* Cheese */
+
 
 .hamburger .cheese {
   position: absolute;
@@ -1079,7 +1079,7 @@ h1 {
   inline-size: 125px;
 }
 
-/* Beef */
+
 
 .hamburger .beef,
 .hamburger .beef::before {
@@ -1101,7 +1101,7 @@ h1 {
   transform: translate(-5px, -10px);
 }
 
-/* Bottom Bun */
+
 
 .hamburger .bottom-bun,
 .hamburger .bottom-bun::before {
@@ -1123,7 +1123,7 @@ h1 {
   transform: translate(-5px, -20px);
 }
 
-/* Animations */
+
 
 @keyframes animate-top-bun {
   0% {
@@ -1318,3 +1318,4 @@ h1 {
     transform: scale(1) translate(5px, 85px);
   }
 }
+//done

@@ -1,9 +1,9 @@
 .v-application {
-  // vertical nav
+  
   &.v-theme--dark .layout-nav-type-vertical,
   .v-theme-provider.v-theme--dark {
     .layout-vertical-nav {
-      // nav-link and nav-group style for dark
+      
       .nav-link .router-link-exact-active,
       .nav-group.active:not(.nav-group .nav-group) > :first-child {
         background-color: rgb(var(--v-theme-primary)) !important;
@@ -35,3 +35,4 @@
     }
   }
 }
+//done

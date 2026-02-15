@@ -6,13 +6,13 @@ import Components from 'unplugin-vue-components/vite'
 import { defineConfig } from 'vite'
 import vuetify from 'vite-plugin-vuetify'
 
-// https://vitejs.dev/config/
+
 export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
 
-    // Docs: https://github.com/vuetifyjs/vuetify-loader/tree/master/packages/vite-plugin
+    
     vuetify({
       styles: {
         configFile: 'src/styles/variables/_vuetify.scss',
@@ -23,7 +23,7 @@ export default defineConfig({
       dts: true,
     }),
 
-    // Docs: https://github.com/antfu/unplugin-auto-import#unplugin-auto-import
+    
     AutoImport({
       eslintrc: {
         enabled: true,
@@ -56,7 +56,8 @@ export default defineConfig({
     ],
   },
   server: {
-    host: '0.0.0.0', // Binds the server to all network interfaces
-    port: 10000,      // The port Render expects for the app
+    host: '0.0.0.0', 
+    port: 10000,      
   },
 })
+//done

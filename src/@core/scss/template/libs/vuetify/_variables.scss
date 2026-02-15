@@ -1,16 +1,16 @@
 $shadow-key-umbra-opacity-custom: var(--v-shadow-key-umbra-opacity);
 $shadow-key-penumbra-opacity-custom: var(--v-shadow-key-penumbra-opacity);
 $shadow-key-ambient-opacity-custom: var(--v-shadow-key-ambient-opacity);
-/* stylelint-disable max-line-length */
+
 $font-family-custom: "Public Sans", sans-serif, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
-/* stylelint-enable max-line-length */
+
 
 @forward "../../../base/libs/vuetify/variables" with (
-  // 👉 font-family
+  
   $body-font-family: $font-family-custom !default,
 
-  // 👉 border-radius
+  
   $border-radius-root: 6px !default,
 
   $shadow-key-umbra: (
@@ -97,7 +97,7 @@ $font-family-custom: "Public Sans", sans-serif, -apple-system, blinkmacsystemfon
     24: (0 9px 46px 8px $shadow-key-ambient-opacity-custom)
   ) !default,
 
-  // 👉 Typography
+  
   $typography: (
     "h1": (
       "weight": 500,
@@ -152,77 +152,77 @@ $font-family-custom: "Public Sans", sans-serif, -apple-system, blinkmacsystemfon
     ),
   ) !default,
 
-  // 👉 Alert
+  
   $alert-density: ("default": 0, "comfortable": -0.625, "compact": -2) !default,
   $alert-title-font-size: 1rem !default,
   $alert-title-line-height: 1.5rem !default,
   $alert-prepend-margin-inline-end: 0.75rem !default,
 
-  // 👉 Badges
+  
   $badge-dot-height: 0.5rem !default,
   $badge-dot-width: 0.5rem !default,
 
-  // 👉 Button
+  
   $button-height: 38px !default,
   $button-icon-density: ("default": 2.5, "comfortable": 0, "compact": -1.5) !default,
   $button-card-actions-padding: 0 12px !default,
 
-  // 👉 Chip
+  
   $chip-font-size: 13px !default,
   $chip-close-size: 22px !default,
   $chip-label-border-radius: 4px !default,
   $chip-density: ("default": 0, "comfortable": -1, "compact": -2) !default,
 
-  // 👉 Dialog
+  
   $dialog-card-header-padding: 20px 20px 0 !default,
   $dialog-card-text-padding: 20px !default,
   $dialog-elevation: 16 !default,
 
-  // 👉 Expansion Panel
+  
   $expansion-panel-title-padding: 14px 20px !default,
   $expansion-panel-title-font-size: 1rem !default,
   $expansion-panel-active-title-min-height: 51px !default,
   $expansion-panel-title-min-height: 51px !default,
   $expansion-panel-text-padding: 6px 20px 20px !default,
 
-  // 👉 List
+  
   $list-item-icon-margin-end: 12px !default,
 
-  // 👉 Pagination
+  
   $pagination-item-margin: 0.2rem !default,
 
-  // 👉 Snackbar
+  
   $snackbar-border-radius: 8px !default,
   $snackbar-btn-padding: 0 12px !default,
   $snackbar-background: rgb(var(--v-snackbar-background)) !default,
   $snackbar-color: rgb(var(--v-snackbar-color)) !default,
 
-  // 👉 Tooltip
+  
   $tooltip-background-color: rgba(var(--v-tooltip-background),var(--v-tooltip-opacity)) !default,
   $tooltip-padding: 4px 8px !default,
   $tooltip-line-height: 16px !default,
   $tooltip-font-size: 11px !default,
 
-  // 👉 Timeline
+  
   $timeline-dot-divider-background: transparent !default,
   $timeline-divider-line-thickness: 1px !default,
   $timeline-item-padding: 16px !default,
 
-  // 👉 input
+  
   $input-details-padding-above: 3px !default,
   $text-field-details-padding-inline: 14px !default,
 
-  // 👉 combobox
+  
   $combobox-content-elevation: 6 !default,
 
-  // 👉 Range slider
+  
   $slider-track-active-size: 4px !default,
   $slider-thumb-label-height: 29px !default,
   $slider-thumb-label-padding: 4px 12px !default,
   $slider-thumb-label-font-size: 12px !default,
   $slider-track-border-radius: 12px !default,
 
-  // 👉 Card
+  
   $card-item-padding: 1.5rem !default,
   $card-border-radius: 0.5rem !default,
   $card-text-padding: 1.5rem !default,
@@ -232,6 +232,7 @@ $font-family-custom: "Public Sans", sans-serif, -apple-system, blinkmacsystemfon
   $card-prepend-padding-inline-end: 0.625rem !default,
   $card-append-padding-inline-start: 0.625rem !default,
 
-  // 👉 Button Group
+  
   $btn-group-height: 38px !default,
 );
+//done

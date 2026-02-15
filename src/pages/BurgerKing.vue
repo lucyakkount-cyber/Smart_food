@@ -1,12 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from "@/axios" // Axios for API requests
+import axios from "@/axios" 
 import AddNewDrawer from "@/views/BurgerKing/AddNewDrawer.vue"
 import Loading from "@/pages/loading.vue"
 import Cafe from "/public/js/telegram"
 import Telegram from "/public/js/telegram"
 
-// Component state
+
 const categories = ref([])
 const input = ref('')
 const isAddNewDrawerVisible = ref(false)
@@ -26,26 +26,26 @@ const formatData = () => {
   input.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, " ")
 }
 
-// const loadUserInfo = async ()=>{
-//   try {
-//     const response = await axios.post(`/user/get_token/`, {
-//       token: token,
-//     }, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     })
-//
-//     loadCafeItems()
-//     role.value = response.data.role
-//   }catch (error){
-//     Telegram?.WebApp?.showConfirm('Muamo yuzaga keldi iltimos qaytatdan urinib ko`ring', (ok=>{
-//       if (ok) Telegram?.WebApp?.close()
-//     }))
-//
-//     console.error(error)
-//   }
-// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const loadCafeItems = async () => {
   if (role.value) {
@@ -145,7 +145,7 @@ const scrollNavbarToActive = () => {
 
 onMounted(() => {
   loadCafeItems()
-  // loadUserInfo()
+  
   window.addEventListener("scroll", updateActiveCategory)
 })
 </script>
@@ -502,3 +502,4 @@ onMounted(() => {
 
 <style scoped>
 </style>
+//done

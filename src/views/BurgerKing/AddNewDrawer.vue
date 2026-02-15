@@ -32,8 +32,8 @@ const isCategoryModalOpen = ref(false)
 const isLoading = ref(false)
 const isLoaded = ref(false)
 const isUpdating = ref(false)
-const selectedCategories = ref([]) // This should store selected category objects
-const people = ref([]) // This stores category data
+const selectedCategories = ref([]) 
+const people = ref([]) 
 
 const formatData = () => {
   const rawValue = formData.value.price.toString().replace(/[^0-9]/g, "")
@@ -99,7 +99,7 @@ const handleFetch = async () => {
   try {
     isUpdating.value = true
 
-    const response = await axios.get("api/categories/") // Adjust the endpoint as needed
+    const response = await axios.get("api/categories/") 
     if (response?.data) {
       people.value = response.data.map(item => ({
         id: item.id,
@@ -299,3 +299,4 @@ onMounted(() => {
   color: white !important;
 }
 </style>
+//done

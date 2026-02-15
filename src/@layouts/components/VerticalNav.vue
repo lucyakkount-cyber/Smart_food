@@ -94,7 +94,7 @@ const handleNavScroll = evt => {
 @use "@configured-variables" as variables;
 @use "@layouts/styles/mixins";
 
-// 👉 Vertical Nav
+
 .layout-vertical-nav {
   position: fixed;
   z-index: variables.$layout-vertical-nav-z-index;
@@ -123,11 +123,11 @@ const handleNavScroll = evt => {
   .nav-items {
     block-size: 100%;
 
-    // ℹ️ We no loner needs this overflow styles as perfect scrollbar applies it
-    // overflow-x: hidden;
+    
+    
 
-    // // ℹ️ We used `overflow-y` instead of `overflow` to mitigate overflow x. Revert back if any issue found.
-    // overflow-y: auto;
+    
+    
   }
 
   .nav-item-title {
@@ -137,14 +137,14 @@ const handleNavScroll = evt => {
     white-space: nowrap;
   }
 
-  // 👉 Collapsed
+  
   .layout-vertical-nav-collapsed & {
     &:not(.hovered) {
       inline-size: variables.$layout-vertical-nav-collapsed-width;
     }
   }
 
-  // 👉 Overlay nav
+  
   &.overlay-nav {
     &:not(.visible) {
       transform: translateX(-#{variables.$layout-vertical-nav-width});
@@ -156,3 +156,4 @@ const handleNavScroll = evt => {
   }
 }
 </style>
+//done

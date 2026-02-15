@@ -5,7 +5,7 @@ import upgradeBannerLight from "@images/pro/upgrade-banner-light.png"
 import VerticalNavLayout from "@layouts/components/VerticalNavLayout.vue"
 import VerticalNavLink from "@layouts/components/VerticalNavLink.vue"
 
-// Components
+
 import Footer from "@/layouts/components/Footer.vue"
 import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue"
 import UserProfile from "@/layouts/components/UserProfile.vue"
@@ -97,3 +97,4 @@ const upgradeBanner = computed(() => {
   padding-inline: 0.25rem;
 }
 </style>
+//done

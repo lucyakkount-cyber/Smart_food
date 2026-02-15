@@ -60,7 +60,7 @@
     block-size: 3rem;
   }
 
-  // Removed double border on left in list view
+  
   .fc-list {
     border-inline-start: none;
     font-size: 0.875rem;
@@ -159,7 +159,7 @@
     }
   }
 
-  // Calendar content container
+  
   .fc-view-harness {
     min-block-size: 40.625rem;
   }
@@ -225,7 +225,7 @@
     }
   }
 
-  // 👉 sidebar toggler
+  
   .fc-toolbar-chunk {
     .fc-button-group {
       align-items: center;
@@ -234,7 +234,7 @@
         vertical-align: bottom;
       }
 
-      // ℹ️ Below two `background-image` styles contains static color due to browser limitation of not parsing the css var inside CSS url()
+      
       .fc-drawerToggler-button {
         display: none;
         background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' stroke='rgba(94,86,105,0.68)' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpath d='M3 12h18M3 6h18M3 18h18'/%3E%3C/svg%3E");
@@ -256,7 +256,7 @@
     }
   }
 
-  // ℹ️ Workaround of https://github.com/fullcalendar/fullcalendar/issues/6407
+  
   .fc-col-header,
   .fc-daygrid-body,
   .fc-scrollgrid-sync-table,
@@ -265,3 +265,4 @@
     inline-size: 100% !important;
   }
 }
+//done

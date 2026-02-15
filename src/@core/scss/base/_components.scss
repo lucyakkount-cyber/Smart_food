@@ -3,7 +3,7 @@
 @use "@layouts/styles/mixins" as layoutMixins;
 @use "@configured-variables" as variables;
 
-// 👉 Avatar group
+
 .v-avatar-group {
   display: flex;
   align-items: center;
@@ -29,7 +29,7 @@
   }
 }
 
-// 👉 Button outline with default color border color
+
 .v-alert--variant-outlined,
 .v-avatar--variant-outlined,
 .v-btn.v-btn--variant-outlined,
@@ -45,7 +45,7 @@
   }
 }
 
-// 👉 Custom Input
+
 .v-label.custom-input {
   padding: 1rem;
   border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
@@ -65,7 +65,7 @@
   }
 }
 
-// 👉 Datatable
+
 .v-data-table-footer__pagination {
   @include layoutMixins.rtl {
     .v-btn {
@@ -76,9 +76,9 @@
   }
 }
 
-// Dialog responsive width
+
 .v-dialog {
-  // dialog custom close btn
+  
   .v-dialog-close-btn {
     position: absolute;
     z-index: 1;
@@ -127,7 +127,7 @@
   }
 }
 
-// v-tab with pill support
+
 
 .v-tabs.v-tabs-pill {
   .v-tab.v-btn {
@@ -140,7 +140,7 @@
   }
 }
 
-// loop for all colors bg
+
 @each $color-name in variables.$theme-colors-name {
   .v-tabs.v-tabs-pill {
     .v-slide-group-item--active.v-tab--selected.text-#{$color-name} {
@@ -150,7 +150,7 @@
   }
 }
 
-// ℹ️ We are make even width of all v-timeline body
+
 .v-timeline--vertical.v-timeline {
   .v-timeline-item {
     .v-timeline-item__body {
@@ -159,14 +159,15 @@
   }
 }
 
-// 👉 Switch
+
 .v-switch .v-selection-control:not(.v-selection-control--dirty) .v-switch__thumb {
   color: #fff !important;
 }
 
-// 👉 Textarea
+
 .v-textarea .v-field__input {
-  /* stylelint-disable-next-line property-no-vendor-prefix */
+  
   -webkit-mask-image: none !important;
   mask-image: none !important;
 }
+//done

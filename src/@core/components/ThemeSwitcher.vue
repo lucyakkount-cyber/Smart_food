@@ -23,7 +23,7 @@ const changeTheme = () => {
   globalTheme.name.value = getNextThemeName()
 }
 
-// Update icon if theme is changed from other sources
+
 watch(() => globalTheme.name.value, val => {
   currentThemeName.value = val
 })
@@ -41,3 +41,4 @@ watch(() => globalTheme.name.value, val => {
     </VTooltip>
   </IconBtn>
 </template>
+//done

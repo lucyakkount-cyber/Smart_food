@@ -1,4 +1,4 @@
-<!-- Thanks: https://markus.oberlehner.net/blog/transition-to-height-auto-with-vue/ -->
+<!-- Thanks: https:
 
 <script>
 import { Transition } from 'vue'
@@ -21,16 +21,16 @@ export default defineComponent({
       element.style.visibility = ''
       element.style.height = '0px'
 
-      // Force repaint to make sure the
-      // animation is triggered correctly.
-      // eslint-disable-next-line no-unused-expressions
+      
+      
+      
       getComputedStyle(element).height
 
-      // Trigger the animation.
-      // We use `requestAnimationFrame` because we need
-      // to make sure the browser has finished
-      // painting after setting the `height`
-      // to `0` in the line above.
+      
+      
+      
+      
+      
       requestAnimationFrame(() => {
         element.style.height = height
       })
@@ -45,9 +45,9 @@ export default defineComponent({
 
       element.style.height = height
 
-      // Force repaint to make sure the
-      // animation is triggered correctly.
-      // eslint-disable-next-line no-unused-expressions
+      
+      
+      
       getComputedStyle(element).height
       requestAnimationFrame(() => {
         element.style.height = '0px'
@@ -85,3 +85,4 @@ export default defineComponent({
   will-change: block-size;
 }
 </style>
+//done

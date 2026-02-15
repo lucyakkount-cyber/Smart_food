@@ -1,7 +1,7 @@
 @use "@configured-variables" as variables;
 @use "vuetify/lib/styles/tools/_elevation" as mixins_elevation;
 
-// 👉 VExpansionPanel
+
 .v-expansion-panel-title,
 .v-expansion-panel-title--active,
 .v-expansion-panel-title:hover,
@@ -14,7 +14,7 @@
   }
 }
 
-// 👉 Set Elevation
+
 .v-expansion-panels {
   .v-expansion-panel {
     .v-expansion-panel__shadow {
@@ -28,7 +28,7 @@
   }
 }
 
-// 👉 Timeline outlined variant
+
 .v-timeline-item {
   .v-timeline-divider__dot {
     .v-timeline-divider__inner-dot {
@@ -44,7 +44,7 @@
   }
 }
 
-// 👉 Timeline Outlined style
+
 .v-timeline-variant-outlined.v-timeline {
   .v-timeline-divider__dot {
     .v-timeline-divider__inner-dot {
@@ -61,9 +61,10 @@
   }
 }
 
-// 👉 v-tab with pill support
+
 .v-tabs.v-tabs-pill {
   .v-tab.v-btn {
     border-radius: 0.375rem !important;
   }
 }
+//done

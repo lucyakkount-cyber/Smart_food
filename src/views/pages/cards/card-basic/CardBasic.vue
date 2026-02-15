@@ -459,7 +459,7 @@ const isCardDetailsVisible = ref(false)
   inset-inline-start: 1rem;
 }
 
-// membership pricing
+
 .member-pricing-bg {
   position: relative;
   background-color: rgba(var(--v-theme-on-surface), var(--v-hover-opacity));
@@ -471,3 +471,4 @@ const isCardDetailsVisible = ref(false)
   }
 }
 </style>
+//done

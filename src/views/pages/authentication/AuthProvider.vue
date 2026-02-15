@@ -36,3 +36,4 @@ const authProviders = [
     :color="global.name.value === 'dark' ? link.colorInDark : link.color"
   />
 </template>
+//done
