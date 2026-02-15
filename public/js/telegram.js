@@ -298,7 +298,8 @@ let Cafe = {
       messageText += `\n<b>Total:</b> ${Cafe.formatPrice(total)}`;
 
       // Telegram Bot API Configuration
-      const BOT_TOKEN = '7597572171:AAGWWqs1QXK3MdVqwr_EV42igxoxkNkaguI'; // Replace with your actual bot token
+      // Telegram Bot API Configuration
+      // BOT_TOKEN is now handled server-side in /api/sendOrder
       // Use Cafe.userId if available, otherwise fallback to the provided test ID
       const CHAT_ID = Cafe.userId || Telegram.WebApp.initDataUnsafe.user?.id || '7019597244';
 
@@ -319,72 +320,45 @@ let Cafe = {
           })
 
           // Helper to send request
-          const sendRequest = (formData) => {
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-              method: 'POST',
-              body: formData,
-            })
-              .then(response => response.json())
-              .then(data => {
-                Cafe.toggleLoading(false)
-                if (data.ok) {
-                  Telegram.WebApp.close()
-                } else {
-                  alert(`Telegram Error: ${data.description}`)
-                }
+          const sendRequest = async (payload) => {
+            try {
+              const response = await fetch('/api/sendOrder', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
               })
-              .catch(error => {
-                Cafe.toggleLoading(false)
-                alert(`Network/Fetch Error: ${error.message}`)
-              })
+              
+              const data = await response.json()
+              
+              Cafe.toggleLoading(false)
+              if (response.ok && data.ok) {
+                Telegram.WebApp.close()
+              } else {
+                alert(`Error: ${data.error || 'Unknown error occurred'}`)
+              }
+            } catch (error) {
+              Cafe.toggleLoading(false)
+              alert(`Network Error: ${error.message}`)
+            }
+          }
+
+          let payload = {
+              chat_id: CHAT_ID,
+              message: messageText
           }
 
           if (firstItemImage) {
-            // Fetch the image to send as a photo
-            fetch(firstItemImage)
-              .then(res => res.blob())
-              .then(blob => {
-                const formData = new FormData()
-                formData.append('chat_id', CHAT_ID)
-                formData.append('photo', blob, 'order.jpg')
-                formData.append('caption', messageText)
-                formData.append('parse_mode', 'HTML')
-                sendRequest(formData)
-              })
-              .catch(e => {
-                // Fallback to sendMessage if image fails
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: messageText,
-                    parse_mode: 'HTML',
-                  }),
-                })
-                  .then(r => r.json())
-                  .then(d => {
-                    if (d.ok) Telegram.WebApp.close()
-                    else alert(`Text Fallback Error: ${d.description}`)
-                  })
-              })
-          } else {
-            // No image found, send text only
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: messageText,
-                parse_mode: 'HTML',
-              }),
-            })
-              .then(r => r.json())
-              .then(d => {
-                if (d.ok) Telegram.WebApp.close()
-                else alert(`Text Error: ${d.description}`)
-              })
+            // Check if it's a relative path and make it absolute if necessary
+            // Telegram requires a valid URL.
+            // If running locally, this might fail if localhost is not accessible by Telegram,
+            // but in production on Vercel, relative URLs should definitely be converted to absolute.
+            const url = new URL(firstItemImage, window.location.origin).href;
+            payload.photo_url = url;
           }
+
+          sendRequest(payload);
         }
       })
     } else {
