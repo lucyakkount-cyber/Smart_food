@@ -12,11 +12,11 @@ export default async function handler(req, res) {
     });
   }
 
-  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-  const PAYCOM_PROVIDER_TOKEN = process.env.PAYCOM_PROVIDER_TOKEN;
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+  const PAYMENT_PROVIDER_TOKEN = process.env.PAYMENT_PROVIDER_TOKEN
 
   if (!BOT_TOKEN) {
-    return res.status(500).json({ error: 'Server configuration error: Missing Bot Token' });
+    return res.status(500).json({ error: 'Server configuration error: Missing Bot Token' })
   }
 
   try {
@@ -48,11 +48,10 @@ export default async function handler(req, res) {
         }))
       };
     } else if (payment_method === 'paycom') {
-      // Traditional payment via Paycom
-      if (!PAYCOM_PROVIDER_TOKEN) {
+      if (!PAYMENT_PROVIDER_TOKEN) {
         return res.status(500).json({ 
-          error: 'Server configuration error: Missing Paycom Provider Token' 
-        });
+          error: 'Server configuration error: Missing Payment Provider Token' 
+        })
       }
 
       payload = {
@@ -64,10 +63,10 @@ export default async function handler(req, res) {
           timestamp: new Date().toISOString(),
           payment_method: 'paycom'
         }),
-        provider_token: PAYCOM_PROVIDER_TOKEN,
+        provider_token: PAYMENT_PROVIDER_TOKEN,
         currency: currency,
         prices: prices
-      };
+      }
     } else {
       return res.status(400).json({ 
         error: 'Invalid payment_method. Must be "stars" or "paycom"' 
