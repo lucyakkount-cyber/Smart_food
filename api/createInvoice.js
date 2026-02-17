@@ -114,45 +114,66 @@ export default async function handler(req, res) {
 
     const invoiceMessageId = data.result.message_id
 
-    // Send a separate message with action buttons (for both payment methods)
+    // Send a separate message with Pay button and order details
     // This must be a REPLY to the invoice message for the pay button to work
-    if (fullUrl) {
-      const messageUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
+    const messageUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
+    
+    // Build message text with emojis and details
+    let messageText = ''
+    
+    if (payment_method === 'stars') {
+      // Calculate conversion rate (1 Star ≈ 10,000 UZS based on our conversion)
+      const totalStars = Math.ceil(total / 10000)
+      const starsToUzs = 10000
       
-      try {
-        const buttonResponse = await fetch(messageUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chat_id,
-            text: '💡 Buyurtmangizni to\'lang yoki qayta tahrirlash uchun quyidagi tugmalarni bosing:',
-            reply_to_message_id: invoiceMessageId,
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  {
-                    text: payment_method === 'stars' ? '⭐ To\'lash' : '💳 To\'lash',
-                    pay: true,
-                  },
-                ],
-                [
-                  {
-                    text: '🔄 Bozorni qayta ochish',
-                    url: fullUrl,
-                  },
-                ],
-              ],
-            },
-          }),
-        })
-        
-        const buttonData = await buttonResponse.json()
-        console.log('Button message sent:', buttonData)
-      } catch (err) {
-        console.error('Error sending button message:', err)
+      messageText = `⭐ <b>Telegram Stars To'lov</b>\n\n`
+      messageText += `💰 <b>Jami:</b> ${totalStars} ⭐ (≈ ${total.toLocaleString()} so'm)\n`
+      messageText += `📊 <b>Kurs:</b> 1 ⭐ = ${starsToUzs.toLocaleString()} so'm\n`
+      
+      if (description && description !== 'Ovqat buyurtmasi') {
+        messageText += `\n💬 <b>Izoh:</b> ${description}`
       }
+      
+      messageText += `\n\n✅ To'lash uchun tugmani bosing!`
+    } else {
+      messageText = `💳 <b>Karta orqali to'lov</b>\n\n`
+      messageText += `💰 <b>Jami:</b> ${total.toLocaleString()} so'm\n`
+      
+      if (description && description !== 'Ovqat buyurtmasi') {
+        messageText += `\n💬 <b>Izoh:</b> ${description}`
+      }
+      
+      messageText += `\n\n✅ To'lash uchun tugmani bosing!`
+    }
+    
+    try {
+      const buttonResponse = await fetch(messageUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id,
+          text: messageText,
+          parse_mode: 'HTML',
+          reply_to_message_id: invoiceMessageId,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: payment_method === 'stars' ? '⭐ Stars bilan to\'lash' : '💳 Karta bilan to\'lash',
+                  pay: true,
+                },
+              ],
+            ],
+          },
+        }),
+      })
+      
+      const buttonData = await buttonResponse.json()
+      console.log('Button message sent:', buttonData)
+    } catch (err) {
+      console.error('Error sending button message:', err)
     }
 
     return res.status(200).json({ 
