@@ -32,12 +32,20 @@ export default async function handler(req, res) {
     // Build URL with order parameters for revisiting
     let orderUrl = web_app_url || 'https://t.me/your_bot'
     const urlParams = new URLSearchParams()
-    items.forEach(item => {
-      // Convert item name to URL-friendly format (lowercase, replace spaces with underscores)
+    
+    // Add each item with data-item-id and count
+    items.forEach((item, index) => {
+      // Use a simple key based on item name (sanitized)
       const itemKey = item.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
-      urlParams.append(itemKey, item.count)
+      urlParams.append('data-item-id', itemKey)
+      urlParams.append('count', item.count)
+      if (index === 0 && item.comment) {
+        urlParams.append('comment', item.comment)
+      }
     })
+    
     const fullUrl = `${orderUrl}?${urlParams.toString()}`
+    console.log('Generated URL:', fullUrl)
 
     // Convert items to Telegram invoice price format
     const prices = items.map(item => ({
@@ -115,32 +123,40 @@ export default async function handler(req, res) {
     // Send a separate message with action buttons (for both payment methods)
     if (fullUrl) {
       const messageUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
-      await fetch(messageUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chat_id,
-          text: '💡 Buyurtmangizni to\'lang yoki qayta tahrirlash uchun quyidagi tugmalarni bosing:',
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: payment_method === 'stars' ? '⭐ To\'lash' : '💳 To\'lash',
-                  pay: true,
-                },
-              ],
-              [
-                {
-                  text: '🔄 Bozorni qayta ochish',
-                  url: fullUrl,
-                },
-              ],
-            ],
+      
+      try {
+        const buttonResponse = await fetch(messageUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-        }),
-      })
+          body: JSON.stringify({
+            chat_id,
+            text: '💡 Buyurtmangizni to\'lang yoki qayta tahrirlash uchun quyidagi tugmalarni bosing:',
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: payment_method === 'stars' ? '⭐ To\'lash' : '💳 To\'lash',
+                    pay: true,
+                  },
+                ],
+                [
+                  {
+                    text: '🔄 Bozorni qayta ochish',
+                    url: fullUrl,
+                  },
+                ],
+              ],
+            },
+          }),
+        })
+        
+        const buttonData = await buttonResponse.json()
+        console.log('Button message sent:', buttonData)
+      } catch (err) {
+        console.error('Error sending button message:', err)
+      }
     }
 
     return res.status(200).json({ 

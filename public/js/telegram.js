@@ -297,8 +297,9 @@ let Cafe = {
 
     const total = items.reduce((sum, item) => sum + (item.price * item.count), 0)
 
-    // Get current page URL for the revisit button
-    const webAppUrl = window.location.href.split('?')[0] // Remove existing query params
+    // Get clean base URL without query params or hash
+    const baseUrl = window.location.origin + window.location.pathname
+    const webAppUrl = baseUrl.replace(/\/$/, '') // Remove trailing slash if present
 
     // Prepare invoice data
     const invoiceData = {
