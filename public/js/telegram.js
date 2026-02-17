@@ -297,6 +297,9 @@ let Cafe = {
 
     const total = items.reduce((sum, item) => sum + (item.price * item.count), 0)
 
+    // Get current page URL for the revisit button
+    const webAppUrl = window.location.href.split('?')[0] // Remove existing query params
+
     // Prepare invoice data
     const invoiceData = {
       chat_id: userId,
@@ -306,6 +309,7 @@ let Cafe = {
       items: items,
       total: total,
       currency: 'UZS',
+      web_app_url: webAppUrl,
     }
 
     fetch('/api/createInvoice', {
