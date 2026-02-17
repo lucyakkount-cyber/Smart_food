@@ -112,8 +112,8 @@ export default async function handler(req, res) {
       })
     }
 
-    // Send a separate message with action buttons (only for card payments)
-    if (payment_method === 'paycom' && fullUrl) {
+    // Send a separate message with action buttons (for both payment methods)
+    if (fullUrl) {
       const messageUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
       await fetch(messageUrl, {
         method: 'POST',
@@ -127,7 +127,7 @@ export default async function handler(req, res) {
             inline_keyboard: [
               [
                 {
-                  text: '💳 To\'lash',
+                  text: payment_method === 'stars' ? '⭐ To\'lash' : '💳 To\'lash',
                   pay: true,
                 },
               ],
