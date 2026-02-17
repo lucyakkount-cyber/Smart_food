@@ -61,11 +61,7 @@ export default async function handler(req, res) {
         chat_id,
         title,
         description: detailedDescription,
-        payload: JSON.stringify({
-          items,
-          timestamp: new Date().toISOString(),
-          payment_method: 'stars',
-        }),
+        payload: `order_${Date.now()}_stars`, // Simple URL-safe string under 128 bytes
         currency: 'XTR', // Telegram Stars currency
         prices: prices.map(p => ({
           label: p.label,
@@ -84,11 +80,7 @@ export default async function handler(req, res) {
         chat_id,
         title,
         description: detailedDescription,
-        payload: JSON.stringify({
-          items,
-          timestamp: new Date().toISOString(),
-          payment_method: 'paycom',
-        }),
+        payload: `order_${Date.now()}_paycom`, // Simple URL-safe string under 128 bytes
         provider_token: PAYMENT_PROVIDER_TOKEN,
         currency: currency,
         prices: prices.map(p => ({
