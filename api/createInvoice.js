@@ -115,7 +115,6 @@ export default async function handler(req, res) {
     const invoiceMessageId = data.result.message_id
 
     // Send a separate message with Pay button and order details
-    // This must be a REPLY to the invoice message for the pay button to work
     const messageUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
     
     // Build message text with emojis and details
@@ -126,24 +125,24 @@ export default async function handler(req, res) {
       const totalStars = Math.ceil(total / 10000)
       const starsToUzs = 10000
       
-      messageText = `⭐ <b>Telegram Stars To'lov</b>\n\n`
-      messageText += `💰 <b>Jami:</b> ${totalStars} ⭐ (≈ ${total.toLocaleString()} so'm)\n`
-      messageText += `📊 <b>Kurs:</b> 1 ⭐ = ${starsToUzs.toLocaleString()} so'm\n`
+      messageText += `⭐ *Telegram Stars To'lov*\n\n`
+      messageText += `💰 *Jami:* ${totalStars} ⭐ (≈ ${total.toLocaleString()} so'm)\n`
+      messageText += `📊 *Kurs:* 1 ⭐ = ${starsToUzs.toLocaleString()} so'm\n`
       
       if (description && description !== 'Ovqat buyurtmasi') {
-        messageText += `\n💬 <b>Izoh:</b> ${description}`
+        messageText += `\n💬 *Izoh:* ${description}`
       }
       
-      messageText += `\n\n✅ To'lash uchun tugmani bosing!`
+      messageText += `\n\n✅ To'lash uchun quyidagi tugmani bosing!`
     } else {
-      messageText = `💳 <b>Karta orqali to'lov</b>\n\n`
-      messageText += `💰 <b>Jami:</b> ${total.toLocaleString()} so'm\n`
+      messageText += `💳 *Karta orqali to'lov*\n\n`
+      messageText += `💰 *Jami:* ${total.toLocaleString()} so'm\n`
       
       if (description && description !== 'Ovqat buyurtmasi') {
-        messageText += `\n💬 <b>Izoh:</b> ${description}`
+        messageText += `\n💬 *Izoh:* ${description}`
       }
       
-      messageText += `\n\n✅ To'lash uchun tugmani bosing!`
+      messageText += `\n\n✅ To'lash uchun quyidagi tugmani bosing!`
     }
     
     try {
@@ -155,7 +154,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           chat_id,
           text: messageText,
-          parse_mode: 'HTML',
+          parse_mode: 'Markdown',
           reply_to_message_id: invoiceMessageId,
           reply_markup: {
             inline_keyboard: [
@@ -171,7 +170,12 @@ export default async function handler(req, res) {
       })
       
       const buttonData = await buttonResponse.json()
-      console.log('Button message sent:', buttonData)
+      
+      if (!buttonResponse.ok) {
+        console.error('Button message error:', buttonData)
+      } else {
+        console.log('Button message sent successfully:', buttonData)
+      }
     } catch (err) {
       console.error('Error sending button message:', err)
     }
