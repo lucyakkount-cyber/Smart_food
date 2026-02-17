@@ -120,7 +120,10 @@ export default async function handler(req, res) {
       })
     }
 
+    const invoiceMessageId = data.result.message_id
+
     // Send a separate message with action buttons (for both payment methods)
+    // This must be a REPLY to the invoice message for the pay button to work
     if (fullUrl) {
       const messageUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
       
@@ -133,6 +136,7 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             chat_id,
             text: '💡 Buyurtmangizni to\'lang yoki qayta tahrirlash uchun quyidagi tugmalarni bosing:',
+            reply_to_message_id: invoiceMessageId,
             reply_markup: {
               inline_keyboard: [
                 [
