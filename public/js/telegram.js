@@ -245,125 +245,92 @@ let Cafe = {
     if (Cafe.modeOrder) {
       let comment = $('.js-order-comment-field').val()
 
-
       let param = JSON.parse(Cafe.getOrderData())
 
-      // Retrieve user data with fallbacks and debugging
       const initDataUser = Telegram.WebApp.initDataUnsafe?.user
-
-      // DEBUG: Verify what Telegram is actually providing
-      // alert(`Debug User Data:\nID: ${initDataUser?.id}\nUsername: ${initDataUser?.username}\nFirst Name: ${initDataUser?.first_name}`);
 
       let username = initDataUser?.username ? `@${initDataUser.username}` : null
       let firstName = initDataUser?.first_name || ''
       let userId = Cafe.userId || initDataUser?.id || 'Unknown ID'
 
-      // If no identifier found, ask the user (useful for testing/browser)
       if (!username && !firstName) {
         const manualName = prompt('Could not detect Telegram Name. Please enter your name:', 'Guest')
         username = manualName || 'Anonymous'
       }
 
-      // Construct HTML message for the order
-      let messageText = `<b>New Order Received</b>\n\n`
-      messageText += `<b>Customer:</b> ${firstName} ${username ? `(${username})` : ''}\n`
-      messageText += `<b>ID:</b> <code>${userId}</code>\n`
-      messageText += `<b>Comment:</b> ${comment || 'None'}\n\n`
-      messageText += `<b>Order Details:</b>\n`
-
-      let total = 0;
-      param.forEach(item => {
-        // item string is "id:count". We need to look up details if possible, or just send IDs.
-        // But param is the raw "id:count" array. We should probably parse it better or use data from DOM.
-        // The original logic just sent IDs. To make it readable, let's try to map it if we can,
-        // but `param` only has ID. The DOM has the names.
-        // Let's rely on the previous loop or just send the raw data for now, 
-        // OR better: Iterate over the DOM elements again to build the string?
-        // Actually, the simplest way is to iterate '.js-item' again or use the data we have.
-        // Let's iterate the DOM to get names.
-      });
-
-       // Re-iterate DOM to get readable order details
+      // Build items array for invoice
+      let items = []
       $('.js-item').each(function() {
         let itemEl = $(this)
         let count = +itemEl.data('item-count') || 0
         if (count > 0) {
-           let name = itemEl.find('.cafe-item-title').text().trim();
-           let price = itemEl.data('item-price');
-           messageText += `- ${name}: ${count} x ${price} = ${count * price}\n`;
-           total += count * price;
+          let name = itemEl.find('.cafe-item-title').text().trim()
+          let price = itemEl.data('item-price')
+          items.push({
+            name: name,
+            count: count,
+            price: price,
+          })
         }
       })
 
-      messageText += `\n<b>Total:</b> ${Cafe.formatPrice(total)}`;
-
-      // Telegram Bot API Configuration
-      // Telegram Bot API Configuration
-      // BOT_TOKEN is now handled server-side in /api/sendOrder
-      // Use Cafe.userId if available, otherwise fallback to the provided test ID
-      const CHAT_ID = Cafe.userId || Telegram.WebApp.initDataUnsafe.user?.id || '7019597244';
-
-      Telegram.WebApp.showConfirm(`Send Order?`, function(confirm) {
-        if (confirm) {
-          Cafe.toggleLoading(true)
-          
-          // Debug: Alert starting process
-
-          // Find the first item with an image to send
-          let firstItemImage = null
-          $('.js-item').each(function() {
-            let count = +$(this).data('item-count') || 0
-            if (count > 0 && !firstItemImage) {
-              let src = $(this).find('img').attr('src')
-              if (src) firstItemImage = src
-            }
-          })
-
-          // Helper to send request
-          const sendRequest = async (payload) => {
-            try {
-              const response = await fetch('/api/sendOrder', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-              })
-              
-              const data = await response.json()
-              
-              Cafe.toggleLoading(false)
-              if (response.ok && data.ok) {
-                Telegram.WebApp.close()
-              } else {
-                alert(`Error: ${data.error || 'Unknown error occurred'}`)
-              }
-            } catch (error) {
-              Cafe.toggleLoading(false)
-              alert(`Network Error: ${error.message}`)
-            }
-          }
-
-          let payload = {
-              chat_id: CHAT_ID,
-              message: messageText
-          }
-
-          if (firstItemImage) {
-            // Check if it's a relative path and make it absolute if necessary
-            // Telegram requires a valid URL.
-            // If running locally, this might fail if localhost is not accessible by Telegram,
-            // but in production on Vercel, relative URLs should definitely be converted to absolute.
-            const url = new URL(firstItemImage, window.location.origin).href;
-            payload.photo_url = url;
-          }
-
-          sendRequest(payload);
+      // Show payment method selection
+      Telegram.WebApp.showPopup({
+        title: 'To\'lov usulini tanlang',
+        message: 'Qaysi usul bilan to\'lamoqchisiz?',
+        buttons: [
+          { id: 'stars', type: 'default', text: '⭐ Telegram Stars' },
+          { id: 'paycom', type: 'default', text: '💳 Karta orqali' },
+          { type: 'cancel' },
+        ],
+      }, function(buttonId) {
+        if (buttonId === 'stars' || buttonId === 'paycom') {
+          Cafe.processPayment(buttonId, items, userId, firstName, username, comment)
         }
       })
     } else {
       Cafe.toggleMode(true)
     }
+  },
+  processPayment: function(paymentMethod, items, userId, firstName, username, comment) {
+    Cafe.toggleLoading(true)
+
+    const total = items.reduce((sum, item) => sum + (item.price * item.count), 0)
+
+    // Prepare invoice data
+    const invoiceData = {
+      chat_id: userId,
+      payment_method: paymentMethod,
+      title: `Buyurtma - ${firstName}`,
+      description: comment || 'Ovqat buyurtmasi',
+      items: items,
+      total: total,
+      currency: 'UZS',
+    }
+
+    fetch('/api/createInvoice', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(invoiceData),
+    })
+      .then(response => response.json())
+      .then(data => {
+        Cafe.toggleLoading(false)
+        if (data.ok) {
+          Telegram.WebApp.showAlert('Invoice yuborildi! Iltimos, to\'lovni tasdiqlang.', function() {
+            // Invoice sent, user will complete payment in Telegram
+            // The webhook will handle the successful_payment event
+          })
+        } else {
+          Telegram.WebApp.showAlert(`Xatolik: ${data.error || 'Noma\'lum xatolik'}`)
+        }
+      })
+      .catch(error => {
+        Cafe.toggleLoading(false)
+        Telegram.WebApp.showAlert(`Tarmoq xatosi: ${error.message}`)
+      })
   },
   eLottieClicked: function(e) {
     e.preventDefault()
