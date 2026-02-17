@@ -324,10 +324,8 @@ let Cafe = {
       .then(data => {
         Cafe.toggleLoading(false)
         if (data.ok) {
-          Telegram.WebApp.showAlert('Invoice yuborildi! Iltimos, to\'lovni tasdiqlang.', function() {
-            // Invoice sent, user will complete payment in Telegram
-            // The webhook will handle the successful_payment event
-          })
+          // Close the WebApp automatically when invoice is sent successfully
+          Telegram.WebApp.close()
         } else {
           Telegram.WebApp.showAlert(`Xatolik: ${data.error || 'Noma\'lum xatolik'}`)
         }

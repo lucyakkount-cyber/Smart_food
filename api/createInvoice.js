@@ -28,6 +28,11 @@ export default async function handler(req, res) {
       detailedDescription += `${item.name} x${item.count} - ${(item.price * item.count).toLocaleString()} so'm\n`
     })
     detailedDescription += `\nJami: ${total.toLocaleString()} so'm`
+    
+    // Add comment if provided
+    if (description && description !== 'Ovqat buyurtmasi') {
+      detailedDescription += `\n\n💬 Izoh: ${description}`
+    }
 
     // Build URL with order parameters for revisiting
     let orderUrl = web_app_url || 'https://t.me/your_bot'
