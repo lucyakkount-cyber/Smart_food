@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   if (!chat_id || !payment_method || !title || !items || !total) {
     return res.status(400).json({ 
-      error: 'Missing required fields: chat_id, payment_method, title, items, total' 
+      error: 'Missing required fields: chat_id, payment_method, title, items, total',
     })
   }
 
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     // Convert items to Telegram invoice price format
     const prices = items.map(item => ({
       label: `${item.name} x${item.count}`,
-      amount: item.price * item.count
+      amount: item.price * item.count,
     }))
 
     let payload
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
     } else if (payment_method === 'paycom') {
       if (!PAYMENT_PROVIDER_TOKEN) {
         return res.status(500).json({ 
-          error: 'Server configuration error: Missing Payment Provider Token' 
+          error: 'Server configuration error: Missing Payment Provider Token',
         })
       }
 
@@ -87,18 +87,10 @@ export default async function handler(req, res) {
           label: p.label,
           amount: p.amount * 100, // Convert UZS to tiyin (smallest unit)
         })),
-        reply_markup: {
-          inline_keyboard: [[
-            {
-              text: '🔄 Buyurtmani qayta ko\'rish',
-              url: fullUrl,
-            },
-          ]],
-        },
       }
     } else {
       return res.status(400).json({ 
-        error: 'Invalid payment_method. Must be "stars" or "paycom"' 
+        error: 'Invalid payment_method. Must be "stars" or "paycom"',
       })
     }
 
@@ -117,6 +109,37 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ 
         error: data.description || 'Failed to create invoice',
         details: data,
+      })
+    }
+
+    // Send a separate message with action buttons (only for card payments)
+    if (payment_method === 'paycom' && fullUrl) {
+      const messageUrl = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`
+      await fetch(messageUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id,
+          text: '💡 Buyurtmangizni to\'lang yoki qayta tahrirlash uchun quyidagi tugmalarni bosing:',
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '💳 To\'lash',
+                  pay: true,
+                },
+              ],
+              [
+                {
+                  text: '🔄 Bozorni qayta ochish',
+                  url: fullUrl,
+                },
+              ],
+            ],
+          },
+        }),
       })
     }
 
